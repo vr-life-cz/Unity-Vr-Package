@@ -1,0 +1,17 @@
+{
+  "name": "com.vrlife.vr",
+  "version": "0.0.1",
+  "displayName": "VRL - VR Package",
+  "description": "VRLIFE VR package, with essential functions.",
+  "dependencies": {   
+ },
+ "keywords": [
+    "vrl",
+    "core"
+  ],
+  "author": {
+    "name": "VRLIFE",
+    "email": "dev@vrlife.cz",
+    "url": "http://vrlife.cz"
+  }
+}
