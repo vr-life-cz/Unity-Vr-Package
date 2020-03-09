@@ -4,6 +4,7 @@
   "displayName": "VRL - VR Package",
   "description": "VRLIFE VR package, with essential functions.",
   "dependencies": {   
+  "com.vrlife.core":"https://github.com/VRLIFE-git/Unity-Core-Package.git"
  },
  "keywords": [
     "vrl",
