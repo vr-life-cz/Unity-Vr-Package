@@ -6,7 +6,11 @@ using Vrlife.Core.Mvc.Implementations;
 
 namespace Vrlife.Core.Vr
 {
-    
+    [Serializable]
+    public class PlayerHandInputDeviceEventHandler : UnityEvent<PlayerHandInputDevice>
+    {
+        
+    }
     
     [Serializable]
     public class PlayerHandView : IPlayerHandView
@@ -14,13 +18,16 @@ namespace Vrlife.Core.Vr
         [SerializeField] private ProximityWatcher watcher;
         [SerializeField] private HumanBodyPart handType;
         [SerializeField] private Transform handRootTransform;
-        [SerializeField] private UnityEvent<PlayerHandInputDevice> onTriggerClicked;
-        [SerializeField] private UnityEvent<PlayerHandInputDevice> onTriggerReleased;
+        [SerializeField] private PlayerHandInputDeviceEventHandler onTriggerClicked;
+        [SerializeField] private PlayerHandInputDeviceEventHandler onTriggerReleased;
         [SerializeField] private MonoAnimator animator;
-
+        [SerializeField] private Grabber grabber;
+        
+        
         public ProximityWatcher Watcher => watcher;
 
         public HumanBodyPart HandType => handType;
+        public Grabber Grabber => grabber;
 
         public IAnimatorComponent Animator => animator;
 

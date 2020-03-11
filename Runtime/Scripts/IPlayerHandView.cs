@@ -10,6 +10,8 @@ namespace Vrlife.Core.Vr
         
         HumanBodyPart HandType { get;  }
 
+        Grabber Grabber { get; }
+        
         IAnimatorComponent Animator { get; }
         
         Transform HandRootTransform { get;  }

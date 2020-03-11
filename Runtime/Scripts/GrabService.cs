@@ -1,9 +1,17 @@
 ﻿using System.Linq;
+using UnityEngine;
 
 namespace Vrlife.Core.Vr
 {
     public class GrabService : IGrabService
     {
+        private readonly IPlayerInputUpdater _inputUpdater;
+
+        public GrabService(IPlayerInputUpdater inputUpdater)
+        {
+            _inputUpdater = inputUpdater;
+        }
+
         public void Grab(Grabber possessor)
         {
             if (!possessor || !possessor.proximityWatcher || possessor.proximityWatcher.ProximityObjects.Count == 0)
@@ -36,8 +44,27 @@ namespace Vrlife.Core.Vr
 
             possessor.grabbedObject.grabedBy = null;
             possessor.grabbedObject.transform.SetParent(null);
+           
+            if (possessor.part != HumanBodyPart.Unknown)
+            {
+                var device = possessor.part == HumanBodyPart.LeftHand
+                    ? _inputUpdater.LeftHandInputDevice
+                    : _inputUpdater.RightHandInputDevice;
+
+                var rigid = possessor.grabbedObject.GetComponent<Rigidbody>();
+                if (rigid)
+                {
+                    rigid.velocity = device.TrackingInformation.Velocity;
+                    Debug.Log(rigid.velocity);
+                }
+            }
+            
             possessor.grabbedObject.InvokeOnReleased();
             possessor.grabbedObject = null;
+            
+            
+           
+
         }
     }
 }

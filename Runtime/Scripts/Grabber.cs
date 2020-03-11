@@ -10,6 +10,8 @@ namespace Vrlife.Core.Vr
 
         public Grabbable grabbedObject;
 
+        public HumanBodyPart part;
+        
         [Inject] private IGrabService _grabService;
 
         public void Grab()
