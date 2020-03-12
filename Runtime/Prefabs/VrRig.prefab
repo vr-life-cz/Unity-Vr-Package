@@ -133,6 +133,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2d7b386d64046e1b4830fb09f1f40c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _camera: {fileID: 5766409847272774651}
 --- !u!54 &5766409847903171491
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -349,6 +350,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   updateStrategy: 0
+  viewModel:
+    triggerClicked: 0
+    onReleaseFired: 0
+    onGrabFired: 0
   view:
     watcher: {fileID: 5766409847903171481}
     handType: 1
@@ -444,6 +449,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   updateStrategy: 0
+  viewModel:
+    triggerClicked: 0
+    onReleaseFired: 0
+    onGrabFired: 0
   view:
     watcher: {fileID: 5766409847903171480}
     handType: 2
