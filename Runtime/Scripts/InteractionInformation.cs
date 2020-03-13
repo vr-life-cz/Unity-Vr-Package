@@ -23,6 +23,10 @@ namespace Vrlife.Core.Vr
 
         public bool IsTriggerTouched;
 
+        public bool IsPrimaryButtonClicked;
+
+        public bool IsSecondaryButtonClicked;
+
         public InteractionInformation(HumanBodyPart part)
         {
             Part = part;

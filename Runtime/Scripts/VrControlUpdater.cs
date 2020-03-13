@@ -141,6 +141,11 @@ namespace Vrlife.Core.Vr
                 out info.InteractionInformation.IsJoystickTouched);
             inputDevice.TryGetFeatureValue(CommonUsages.primary2DAxisClick,
                 out info.InteractionInformation.IsJoystickClicked);
+            
+            inputDevice.TryGetFeatureValue(CommonUsages.primaryButton, // A/X
+                out info.InteractionInformation.IsPrimaryButtonClicked);
+            inputDevice.TryGetFeatureValue(CommonUsages.primaryButton, // B/Y
+                out info.InteractionInformation.IsPrimaryButtonClicked);
         }
     }
 }
