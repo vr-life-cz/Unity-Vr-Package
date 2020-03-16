@@ -64,9 +64,12 @@ namespace Vrlife.Core.Vr
 
             foreach (var inputSubsystem in _subsystems)
             {
+                Debug.Log("Detected subsystem " + inputSubsystem.GetType());
                 inputSubsystem.TrySetTrackingOriginMode(TrackingOriginModeFlags.Floor);
             }
 
+            if(_subsystems.Count == 0) Debug.LogError("No Subsystems detected");
+            
             impulse = new byte[20];
 
             var caps = new HapticCapabilities();
