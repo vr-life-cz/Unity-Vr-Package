@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 using UnityEngine;
 using UnityEngine.XR;
 
@@ -55,7 +56,6 @@ namespace Vrlife.Core.Vr
 
         private void Start()
         {
-            
             LeftHandInputDevice = new PlayerHandInputDevice(HumanBodyPart.LeftHand);
 
             RightHandInputDevice = new PlayerHandInputDevice(HumanBodyPart.RightHand);
@@ -68,16 +68,21 @@ namespace Vrlife.Core.Vr
                 inputSubsystem.TrySetTrackingOriginMode(TrackingOriginModeFlags.Floor);
             }
 
-            if(_subsystems.Count == 0) Debug.LogError("No Subsystems detected");
             
+            if (_subsystems.Count == 0)
+            {
+                XRDevice.SetTrackingSpaceType(TrackingSpaceType.RoomScale);
+                Debug.LogError("No Subsystems detected");
+            }
+
             impulse = new byte[20];
 
             var caps = new HapticCapabilities();
 
             int clipCount = (int) (caps.bufferFrequencyHz * 2);
-            
+
             impulse = new byte[clipCount];
-            
+
             for (int i = 0; i < clipCount; i++)
             {
                 impulse[i] = byte.MaxValue;
@@ -92,9 +97,8 @@ namespace Vrlife.Core.Vr
             var inputDevices = new List<InputDevice>();
 
             InputDevices.GetDevices(inputDevices);
-            
 
-            
+
             foreach (var inputDevice in inputDevices)
             {
                 inputDevice.SendHapticBuffer(0, impulse);
@@ -144,7 +148,7 @@ namespace Vrlife.Core.Vr
                 out info.InteractionInformation.IsJoystickTouched);
             inputDevice.TryGetFeatureValue(CommonUsages.primary2DAxisClick,
                 out info.InteractionInformation.IsJoystickClicked);
-            
+
             inputDevice.TryGetFeatureValue(CommonUsages.primaryButton, // A/X
                 out info.InteractionInformation.IsPrimaryButtonClicked);
             inputDevice.TryGetFeatureValue(CommonUsages.primaryButton, // B/Y
