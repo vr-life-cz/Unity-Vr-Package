@@ -89,6 +89,7 @@ namespace Vrlife.Core.Vr
             }
         }
 
+        private bool _errorLogged;
         private void Update()
         {
             _nodes.Clear();
@@ -98,8 +99,9 @@ namespace Vrlife.Core.Vr
 
             InputDevices.GetDevices(inputDevices);
 
-            if (inputDevices.Count == 0)
+            if (inputDevices.Count == 0 && !_errorLogged)
             {
+                _errorLogged = true;
                 Debug.LogError("No Input devices");
             }
             
@@ -110,9 +112,6 @@ namespace Vrlife.Core.Vr
 
                 if((inputDevice.characteristics & InputDeviceCharacteristics.Left) != 0)
                 {
-                    Debug.Log(inputDevice.characteristics);
-                    Debug.Log(inputDevice.role);
-
                     if (_leftHandImpulses.Count > 0)
                     {
                         var signalL = _leftHandImpulses.Pop();
@@ -125,9 +124,6 @@ namespace Vrlife.Core.Vr
                 
                 if((inputDevice.characteristics & InputDeviceCharacteristics.Right) != 0)
                 {
-                    Debug.Log(inputDevice.characteristics);
-                    Debug.Log(inputDevice.role);
-
                     if (_rightHandImpulses.Count > 0)
                     {
                         var signalR = _rightHandImpulses.Pop();
@@ -170,22 +166,28 @@ namespace Vrlife.Core.Vr
         private void UpdateTrackingInformation(InputDevice inputDevice, PlayerHandInputDevice info)
         {
             inputDevice.TryGetFeatureValue(CommonUsages.devicePosition, out info.TrackingInformation.Position);
+            
             inputDevice.TryGetFeatureValue(CommonUsages.deviceRotation, out info.TrackingInformation.Rotation);
 
             inputDevice.TryGetFeatureValue(CommonUsages.deviceAcceleration, out info.TrackingInformation.Acceleration);
+            
             inputDevice.TryGetFeatureValue(CommonUsages.deviceVelocity, out info.TrackingInformation.Velocity);
 
             inputDevice.TryGetFeatureValue(CommonUsages.triggerButton,
                 out info.InteractionInformation.IsTriggerTouched);
+            
             inputDevice.TryGetFeatureValue(CommonUsages.trigger, out info.InteractionInformation.TriggerPressure);
 
             inputDevice.TryGetFeatureValue(CommonUsages.gripButton, out info.InteractionInformation.IsGripTouched);
+            
             inputDevice.TryGetFeatureValue(CommonUsages.grip, out info.InteractionInformation.GripPressure);
 
             inputDevice.TryGetFeatureValue(CommonUsages.primary2DAxis,
                 out info.InteractionInformation.JoystickPosition);
+            
             inputDevice.TryGetFeatureValue(CommonUsages.primary2DAxisTouch,
                 out info.InteractionInformation.IsJoystickTouched);
+            
             inputDevice.TryGetFeatureValue(CommonUsages.primary2DAxisClick,
                 out info.InteractionInformation.IsJoystickClicked);
 
