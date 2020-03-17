@@ -100,6 +100,11 @@ namespace Vrlife.Core.Vr
 
             foreach (var inputDevice in inputDevices)
             {
+                print(inputDevice.characteristics);
+            }
+            return;
+            foreach (var inputDevice in inputDevices)
+            {
                 
                 inputDevice.SendHapticBuffer(0, impulse);
 
