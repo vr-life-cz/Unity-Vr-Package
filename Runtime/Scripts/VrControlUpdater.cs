@@ -100,15 +100,8 @@ namespace Vrlife.Core.Vr
 
             if (inputDevices.Count == 0)
             {
-                Debug.Log("No Input devices");
+                Debug.LogError("No Input devices");
             }
-            
-            foreach (var inputDevice in inputDevices)
-            {
-                print(inputDevice.characteristics);
-            }
-            
-            return;
             
             foreach (var inputDevice in inputDevices)
             {
