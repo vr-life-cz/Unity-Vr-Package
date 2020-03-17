@@ -52,10 +52,14 @@ namespace Vrlife.Core.Vr
 
             
             var trackingInformation = inputDevice.TrackingInformation;;
-            
+
             handRootTransform.localPosition = trackingInformation.Position;
+            
             handRootTransform.localRotation = trackingInformation.Rotation;
             
+            Debug.Log(trackingInformation.Position);
+            Debug.Log(trackingInformation.Rotation);
+
             _view.Animator.SetParameter(AnimatorFinger, inputDevice.InteractionInformation.TriggerPressure);
            
             if (_generalSettings.minTriggerPressureToClick < inputDevice.InteractionInformation.TriggerPressure)

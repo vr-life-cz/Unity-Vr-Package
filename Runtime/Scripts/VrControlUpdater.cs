@@ -98,32 +98,67 @@ namespace Vrlife.Core.Vr
 
             InputDevices.GetDevices(inputDevices);
 
-
             foreach (var inputDevice in inputDevices)
             {
+                
                 inputDevice.SendHapticBuffer(0, impulse);
 
-                switch (inputDevice.role)
+                if((inputDevice.characteristics & InputDeviceCharacteristics.Left) != 0)
                 {
-                    case InputDeviceRole.LeftHanded:
-                        if (_leftHandImpulses.Count > 0)
-                        {
-                            var signalL = _leftHandImpulses.Pop();
-                            //inputDevice.SendHapticImpulse(0, signalL.Amplitude, signalL.Duration);
-                        }
+                    Debug.Log(inputDevice.characteristics);
+                    Debug.Log(inputDevice.role);
 
-                        UpdateTrackingInformation(inputDevice, LeftHandInputDevice);
-                        break;
-                    case InputDeviceRole.RightHanded:
-                        if (_rightHandImpulses.Count > 0)
-                        {
-                            var signalR = _rightHandImpulses.Pop();
-                            inputDevice.SendHapticImpulse(0, signalR.Amplitude, signalR.Duration);
-                        }
+                    if (_leftHandImpulses.Count > 0)
+                    {
+                        var signalL = _leftHandImpulses.Pop();
+                        inputDevice.SendHapticImpulse(0, signalL.Amplitude, signalL.Duration);
+                    }
 
-                        UpdateTrackingInformation(inputDevice, RightHandInputDevice);
-                        break;
+                    UpdateTrackingInformation(inputDevice, LeftHandInputDevice);
                 }
+                
+                
+                if((inputDevice.characteristics & InputDeviceCharacteristics.Right) != 0)
+                {
+                    Debug.Log(inputDevice.characteristics);
+                    Debug.Log(inputDevice.role);
+
+                    if (_rightHandImpulses.Count > 0)
+                    {
+                        var signalR = _rightHandImpulses.Pop();
+                        inputDevice.SendHapticImpulse(0, signalR.Amplitude, signalR.Duration);
+                    }
+
+                    UpdateTrackingInformation(inputDevice, RightHandInputDevice);
+                }
+                
+//                switch (inputDevice.characteristics)
+//                {
+//                    case InputDeviceCharacteristics.Left:
+//                        Debug.Log(inputDevice.characteristics);
+//                        Debug.Log(inputDevice.role);
+//
+//                        if (_leftHandImpulses.Count > 0)
+//                        {
+//                            var signalL = _leftHandImpulses.Pop();
+//                            inputDevice.SendHapticImpulse(0, signalL.Amplitude, signalL.Duration);
+//                        }
+//
+//                        UpdateTrackingInformation(inputDevice, LeftHandInputDevice);
+//                        break;
+//                    case  InputDeviceCharacteristics.Right:
+//                        Debug.Log(inputDevice.characteristics);
+//                        Debug.Log(inputDevice.role);
+//
+//                        if (_rightHandImpulses.Count > 0)
+//                        {
+//                            var signalR = _rightHandImpulses.Pop();
+//                            inputDevice.SendHapticImpulse(0, signalR.Amplitude, signalR.Duration);
+//                        }
+//
+//                        UpdateTrackingInformation(inputDevice, RightHandInputDevice);
+//                        break;
+//                }
             }
         }
 
@@ -151,6 +186,7 @@ namespace Vrlife.Core.Vr
 
             inputDevice.TryGetFeatureValue(CommonUsages.primaryButton, // A/X
                 out info.InteractionInformation.IsPrimaryButtonClicked);
+            
             inputDevice.TryGetFeatureValue(CommonUsages.primaryButton, // B/Y
                 out info.InteractionInformation.IsPrimaryButtonClicked);
         }
