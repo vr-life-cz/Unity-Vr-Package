@@ -18,6 +18,9 @@ namespace Vrlife.Core.Vr
         [ColorUsage(true, false)]
         public Color cantTeleportColor;
 
+        public bool teleportationEnabled = true;
+        public bool joystickMovementEnabled = true;
+
         private RaycastHit hitObject;
         private bool teleportReady;
 
@@ -45,8 +48,8 @@ namespace Vrlife.Core.Vr
 
         private void Update()
         {
-            Movement();
-            Teleport();
+            if (joystickMovementEnabled) Movement();
+            if (teleportationEnabled) Teleport();
         }
 
         private void Movement()

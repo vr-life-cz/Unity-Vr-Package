@@ -29,8 +29,6 @@ namespace Vrlife.Core.Vr
 
             Container.Bind<XrGeneralSettings>().FromScriptableObject(GeneralSettings).AsSingle();
             
-            Container.Bind<IPlayerHandInteractionService>().To<PlayerHandInteractionService>().AsSingle();
-
             Container.Bind<IGrabService>().To<GrabService>().AsSingle();
 
             Container.BindViewController<IPlayerHandView, IPlayerHandController>()
