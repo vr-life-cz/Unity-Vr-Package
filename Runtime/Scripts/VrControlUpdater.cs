@@ -194,8 +194,8 @@ namespace Vrlife.Core.Vr
             inputDevice.TryGetFeatureValue(CommonUsages.primaryButton, // A/X
                 out info.InteractionInformation.IsPrimaryButtonClicked);
             
-            inputDevice.TryGetFeatureValue(CommonUsages.primaryButton, // B/Y
-                out info.InteractionInformation.IsPrimaryButtonClicked);
+            inputDevice.TryGetFeatureValue(CommonUsages.secondaryButton, // B/Y
+                out info.InteractionInformation.IsSecondaryButtonClicked);
         }
     }
 }
