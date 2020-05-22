@@ -6,8 +6,6 @@ namespace Vrlife.Core.Vr
     {
         private IPlayerInputUpdater _playerInputUpdater;
 
-        private IPlayerHandInteractionService _playerHandInteractionService;
-
         private XrGeneralSettings _generalSettings;
 
 

@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using UnityEngine;
 using Zenject;
 
@@ -17,6 +18,16 @@ namespace Vrlife.Core.Vr
         public Color canTeleportColor;
         [ColorUsage(true, false)]
         public Color cantTeleportColor;
+
+        [Header("Controls")]
+        [Description("Enables teleportation around using B button on right controller.")]
+        public bool teleportationEnabled = true;
+        [Description("Enables 'Walking' along X and Z axis using right joystick.")]
+        public bool horizontalMovementEnabled = true;
+        [Description("Enables 'Flying' along Y axis using left joystick.")]
+        public bool verticalMovementEnabled = true;
+        [Description("Level of the floor. You can't go below it.")] 
+        public float floorLevel = 0f;
 
         private RaycastHit hitObject;
         private bool teleportReady;
@@ -45,11 +56,12 @@ namespace Vrlife.Core.Vr
 
         private void Update()
         {
-            Movement();
-            Teleport();
+            if (horizontalMovementEnabled) HorizontalMovement();
+            if (verticalMovementEnabled) VerticalMovement();
+            if (teleportationEnabled) Teleport();
         }
 
-        private void Movement()
+        private void HorizontalMovement()
         {
             Vector2 input = inputUpdater.RightHandInputDevice.InteractionInformation.JoystickPosition;
 
@@ -62,6 +74,21 @@ namespace Vrlife.Core.Vr
 
             Vector3 coordinates = right * input.x + forward * input.y;
             transform.Translate(coordinates * movementSpeed * Time.deltaTime);
+        }
+
+        private void VerticalMovement()
+        {
+            Vector2 input = inputUpdater.LeftHandInputDevice.InteractionInformation.JoystickPosition;
+            Vector3 up = _camera.transform.up;
+            up.x = 0f;
+            up.z = 0f;
+            up.Normalize();
+            Vector3 coordinates = up * input.y;
+            if (_camera.transform.position.y > (floorLevel + .5f) || input.y > 0)
+            {
+                transform.Translate(coordinates * movementSpeed * Time.deltaTime);
+            }
+            
         }
 
         private void Teleport()

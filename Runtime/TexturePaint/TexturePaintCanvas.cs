@@ -76,8 +76,6 @@ namespace Vrlife.Core.TexturePaint
            
             if (!paintBrush) return;
 
-            print(paintBrush);
-            
             var ray = paintBrush.GetRay();
 
 
@@ -96,8 +94,6 @@ namespace Vrlife.Core.TexturePaint
 
                 var hitInfoTextureCoord = hitInfo.textureCoord;
                 
-                print(hitInfoTextureCoord);
-
                 maskMaterial.SetColor(DrawColor, Color.blue);
 
                 maskMaterial.SetFloat(BrushStrength, paintBrush.Strength);
