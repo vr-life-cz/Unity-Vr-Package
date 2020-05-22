@@ -106,10 +106,10 @@ namespace Vrlife.Core.Vr
         {
             distance += Input.mouseScrollDelta.y * .1f;
 
-            var v3 = Input.mousePosition;
+            var v3 = new Vector3(Input.mousePosition.x, Input.mousePosition.y, distance);
             
             
-            info.TrackingInformation.Position = Camera.main.ScreenToWorldPoint( Input.mousePosition);
+            info.TrackingInformation.Position = Camera.main.ScreenToWorldPoint( v3);
             
             info.InteractionInformation.IsTriggerTouched = Input.GetAxis("Fire1") > 0;
             
