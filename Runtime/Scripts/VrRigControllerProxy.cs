@@ -26,6 +26,8 @@ namespace Vrlife.Core.Vr
         public bool horizontalMovementEnabled = true;
         [Description("Enables 'Flying' along Y axis using left joystick.")]
         public bool verticalMovementEnabled = true;
+        [Description("Level of the floor. You can't go below it.")] 
+        public float floorLevel = 0f;
 
         private RaycastHit hitObject;
         private bool teleportReady;
@@ -82,7 +84,11 @@ namespace Vrlife.Core.Vr
             up.z = 0f;
             up.Normalize();
             Vector3 coordinates = up * input.y;
-            transform.Translate(coordinates * movementSpeed * Time.deltaTime);
+            if (_camera.transform.position.y > (floorLevel + .5f) || input.y > 0)
+            {
+                transform.Translate(coordinates * movementSpeed * Time.deltaTime);
+            }
+            
         }
 
         private void Teleport()
