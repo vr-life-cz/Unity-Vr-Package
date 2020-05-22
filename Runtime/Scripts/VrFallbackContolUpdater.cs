@@ -110,10 +110,13 @@ namespace Vrlife.Core.Vr
             
             
             info.TrackingInformation.Position = Camera.main.ScreenToWorldPoint( v3);
+
+            info.InteractionInformation.IsPrimaryButtonClicked = Input.GetAxis("Fire1") > .8f;
             
             info.InteractionInformation.IsTriggerTouched = Input.GetAxis("Fire1") > 0;
             
             info.InteractionInformation.TriggerPressure = Input.GetAxis("Fire1");
+            
         }
     }
 }
