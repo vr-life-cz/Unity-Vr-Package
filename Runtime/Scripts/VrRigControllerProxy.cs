@@ -35,7 +35,38 @@ namespace Vrlife.Core.Vr
         private Gradient canTeleportGradient;
         private Gradient cantTeleportGradient;
 
-
+        public void DisableBothMovement()
+        {
+            verticalMovementEnabled = false;
+            horizontalMovementEnabled = false;
+        }
+        
+        public void ToggleVerticalMovement()
+        {
+            if (!verticalMovementEnabled)
+            {
+                verticalMovementEnabled = true;
+                horizontalMovementEnabled = false;
+            }
+            else
+            {
+                verticalMovementEnabled = false;
+            }
+        }
+        
+        public void ToggleHorizontalMovement()
+        {
+            if (!horizontalMovementEnabled)
+            {
+                horizontalMovementEnabled = true;
+                verticalMovementEnabled = false;
+            }
+            else
+            {
+                horizontalMovementEnabled = false;
+            }
+        }
+        
         private void Awake()
         {
             layerMask = LayerMask.NameToLayer("Everything");
