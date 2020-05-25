@@ -135,11 +135,16 @@ namespace Vrlife.Core.Vr
         private void VerticalMovement()
         {
             Vector2 input = inputUpdater.LeftHandInputDevice.InteractionInformation.JoystickPosition;
+            
             Vector3 up = _camera.transform.up;
-            up.x = 0f;
             up.z = 0f;
             up.Normalize();
-            Vector3 coordinates = up * input.y;
+            
+            Vector3 right = _camera.transform.right;
+            right.y = 0f;
+            right.Normalize();
+            Vector3 coordinates =  right * input.x + up * input.y;
+            
             if (_camera.transform.position.y > (floorLevel + .5f) || input.y > 0)
             {
                 transform.Translate(coordinates * movementSpeed * Time.deltaTime);
