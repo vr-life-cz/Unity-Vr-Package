@@ -12,6 +12,7 @@ namespace Vrlife.Core.Vr
     {
     }
 
+    [Serializable]
     public class ControllerInputBinding
     {
         public ControllerInput input;
