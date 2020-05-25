@@ -111,7 +111,7 @@ namespace Vrlife.Core.Vr
 
         private void HorizontalMovement()
         {
-            Vector2 input = inputUpdater.RightHandInputDevice.InteractionInformation.JoystickPosition;
+            Vector2 input = inputUpdater.LeftHandInputDevice.InteractionInformation.JoystickPosition;
 
             Vector3 forward = _camera.transform.forward;
             forward.y = 0f;
