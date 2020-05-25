@@ -20,12 +20,7 @@ namespace Vrlife.Core.Vr
                 new ControllerData
                 {
                     Device = _playerInputUpdater.RightHandInputDevice
-                },
-                new ControllerData
-                {
-                    Device = _playerInputUpdater.LeftHandInputDevice
-                },
-            
+                }
             };
 
             // Create a new camera that will be used for raycasts
@@ -63,8 +58,8 @@ namespace Vrlife.Core.Vr
 
         protected void UpdateCameraPosition(PlayerHandInputDevice controller)
         {
-            transform.position = controller.TrackingInformation.Position;
-            transform.rotation = controller.TrackingInformation.Rotation;
+            UICamera.transform.position = controller.TrackingInformation.Position;
+            UICamera.transform.rotation = controller.TrackingInformation.Rotation;
         }
         // clear the current selection
         public void ClearSelection()
