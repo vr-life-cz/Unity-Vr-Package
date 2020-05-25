@@ -10,6 +10,10 @@ namespace Vrlife.Core.Vr
 
         private PhysicsRaycaster raycaster;
 
+        public GameObject leftHandLaserPoint;
+        public GameObject rightHandLaserPoint;
+        
+        
         [Inject] private IPlayerInputUpdater _playerInputUpdater;
         public LayerMask layerMask;
 
@@ -19,7 +23,8 @@ namespace Vrlife.Core.Vr
             {
                 new ControllerData
                 {
-                    Device = _playerInputUpdater.RightHandInputDevice
+                    Device = _playerInputUpdater.RightHandInputDevice,
+                    GameObject = rightHandLaserPoint
                 }
             };
 
@@ -52,14 +57,15 @@ namespace Vrlife.Core.Vr
             public GameObject currentPoint;
             public GameObject currentPressed;
             public GameObject currentDragging;
+            public GameObject GameObject;
         };
 
         private ControllerData[] _controllerDatas;
 
-        protected void UpdateCameraPosition(PlayerHandInputDevice controller)
+        protected void UpdateCameraPosition(GameObject controller)
         {
-            UICamera.transform.position = controller.TrackingInformation.Position;
-            UICamera.transform.rotation = controller.TrackingInformation.Rotation;
+            UICamera.transform.position = controller.transform.position;
+            UICamera.transform.rotation = controller.transform.rotation;
         }
         // clear the current selection
         public void ClearSelection()
@@ -87,7 +93,7 @@ namespace Vrlife.Core.Vr
             {
                 ControllerData data = inputDevice;
                 // Test if UICamera is looking at a GUI element
-                UpdateCameraPosition(data.Device);
+                UpdateCameraPosition(data.GameObject);
 
                 if (data.pointerEvent == null)
                     data.pointerEvent = new LaserPointerEventData(eventSystem);
