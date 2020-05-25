@@ -92,7 +92,7 @@ namespace Vrlife.Core.Vr
                 _isPrimaryButtonDown = true;
                 FireInputHandler(ControllerInput.PrimaryButtonClick);
             }
-            else if (_isPrimaryButtonDown && !inputDevice.InteractionInformation.IsPrimaryButtonClicked))
+            else if (_isPrimaryButtonDown && !inputDevice.InteractionInformation.IsPrimaryButtonClicked)
             {
                 _isPrimaryButtonDown = false;
             }
