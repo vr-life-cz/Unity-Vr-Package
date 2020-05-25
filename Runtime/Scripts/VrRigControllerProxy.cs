@@ -35,6 +35,12 @@ namespace Vrlife.Core.Vr
         private Gradient canTeleportGradient;
         private Gradient cantTeleportGradient;
 
+        private void EnableDefaultMovement()
+        {
+            verticalMovementEnabled = true;
+            horizontalMovementEnabled = false;
+        }
+        
         public void DisableBothMovement()
         {
             verticalMovementEnabled = false;
@@ -109,6 +115,8 @@ namespace Vrlife.Core.Vr
             if (teleportationEnabled) Teleport();
         }
 
+       
+        
         private void HorizontalMovement()
         {
             Vector2 input = inputUpdater.LeftHandInputDevice.InteractionInformation.JoystickPosition;
