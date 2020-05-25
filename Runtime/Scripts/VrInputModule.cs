@@ -140,7 +140,7 @@ namespace Vrlife.Core.Vr
                 // Handle enter and exit events on the GUI controlls that are hit
                 HandlePointerExitAndEnter(data.pointerEvent, data.currentPoint);
 
-                if (inputDevice.Device.InteractionInformation.IsPrimaryButtonClicked)
+                if (inputDevice.Device.InteractionInformation.IsTriggerClicked)
                 {
                     ClearSelection();
 
@@ -199,7 +199,7 @@ namespace Vrlife.Core.Vr
                 } // button down end
 
 
-                if (!inputDevice.Device.InteractionInformation.IsPrimaryButtonClicked)
+                if (!inputDevice.Device.InteractionInformation.IsTriggerClicked)
                 {
                     if (data.currentDragging != null)
                     {
