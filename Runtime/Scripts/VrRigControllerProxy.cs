@@ -40,6 +40,23 @@ namespace Vrlife.Core.Vr
             verticalMovementEnabled = false;
             horizontalMovementEnabled = false;
         }
+
+        public void SwitchMovement()
+        {
+            if (verticalMovementEnabled || horizontalMovementEnabled)
+            {
+                if (verticalMovementEnabled)
+                {
+                    verticalMovementEnabled = false;
+                    horizontalMovementEnabled = true;
+                }
+                else
+                {
+                    verticalMovementEnabled = true;
+                    horizontalMovementEnabled = false;
+                }
+            }
+        }
         
         public void ToggleVerticalMovement()
         {
