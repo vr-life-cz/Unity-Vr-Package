@@ -1,22 +1,23 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using UnityEngine;
 
 namespace Vrlife.Core.Vr
 {
     public class PlayerHandController : IPlayerHandController
     {
         private IPlayerHandView _view;
-        
+
         private readonly XrGeneralSettings _generalSettings;
 
         private readonly IPlayerInputUpdater _inputUpdater;
-        
+
         private bool _triggerClicked;
 
         private bool _onReleaseFired;
 
         private bool _onGrabFired;
 
-        
+
         public PlayerHandController(IPlayerInputUpdater inputUpdater, XrGeneralSettings generalSettings)
         {
             _inputUpdater = inputUpdater;
@@ -30,9 +31,9 @@ namespace Vrlife.Core.Vr
                 _view.Watcher.onProximityTriggerEnter.RemoveListener(OnEnter);
                 _view.Watcher.onProximityTriggerEnter.RemoveListener(OnEnter);
             }
-            
+
             _view = view;
-            
+
             if (_view != null && _view.Watcher)
             {
                 _view.Watcher.onProximityTriggerEnter.AddListener(OnEnter);
@@ -41,52 +42,88 @@ namespace Vrlife.Core.Vr
         }
 
         private readonly int AnimatorFinger = Animator.StringToHash("Blend");
-        
+
+        private void FireInputHandler(ControllerInput input)
+        {
+            var triggerClicks = _view.InputBindings.Where(x => x.input == input);
+
+            foreach (var inputBinding in triggerClicks)
+            {
+                foreach (var inputBindingHandler in inputBinding.handlers)
+                {
+                    inputBindingHandler?.Invoke();
+                }
+            }
+        }
+
         public void Update()
         {
             var handRootTransform = _view.HandRootTransform;
-            
+
             var inputDevice = _view.HandType == HumanBodyPart.LeftHand
                 ? _inputUpdater.LeftHandInputDevice
                 : _inputUpdater.RightHandInputDevice;
 
-            
-            var trackingInformation = inputDevice.TrackingInformation;;
+
+            var trackingInformation = inputDevice.TrackingInformation;
+            ;
 
             handRootTransform.localPosition = trackingInformation.Position;
-            
-            handRootTransform.localRotation = trackingInformation.Rotation;
-            
-            _view.Animator.SetParameter(AnimatorFinger, inputDevice.InteractionInformation.TriggerPressure);
-           
-            if (_generalSettings.minTriggerPressureToClick < inputDevice.InteractionInformation.TriggerPressure)
-            {
-                if (!_onGrabFired)
-                {
-                    Debug.Log("clicked");
 
-                    _onGrabFired = true;
-                    _onReleaseFired = false;
-                    _view.OnTriggerClicked?.Invoke(inputDevice);
-                }
-            }
-            else
+            handRootTransform.localRotation = trackingInformation.Rotation;
+
+            _view.Animator.SetParameter(AnimatorFinger, inputDevice.InteractionInformation.TriggerPressure);
+
+            if (!_onGrabFired && _generalSettings.minTriggerPressureToClick <
+                inputDevice.InteractionInformation.TriggerPressure)
             {
-                if (!_onReleaseFired)
-                {
-                    Debug.Log("released");
-                    
-                    _onGrabFired = false;
-                    _onReleaseFired = true;
-                    _view.OnTriggerReleased?.Invoke(inputDevice);
-                }
+                _onGrabFired = true;
+                FireInputHandler(ControllerInput.TriggerClick);
             }
+            else if (_onGrabFired && _generalSettings.minTriggerPressureToClickRelease >
+                     inputDevice.InteractionInformation.TriggerPressure)
+            {
+                _onGrabFired = false;
+            }
+
+            if (inputDevice.InteractionInformation.IsPrimaryButtonClicked)
+            {
+                FireInputHandler(ControllerInput.PrimaryButtonClick);
+            }
+
+
+            if (inputDevice.InteractionInformation.IsSecondaryButtonClicked)
+            {
+                FireInputHandler(ControllerInput.SecondaryButtonClick);
+            }
+//           
+//            if (_generalSettings.minTriggerPressureToClick < inputDevice.InteractionInformation.TriggerPressure)
+//            {
+//                if (!_onGrabFired)
+//                {
+//                    Debug.Log("clicked");
+//
+//                    _onGrabFired = true;
+//                    _onReleaseFired = false;
+//                    _view.OnTriggerClicked?.Invoke(inputDevice);
+//                }
+//            }
+//            else
+//            {
+//                if (!_onReleaseFired)
+//                {
+//                    Debug.Log("released");
+//                    
+//                    _onGrabFired = false;
+//                    _onReleaseFired = true;
+//                    _view.OnTriggerReleased?.Invoke(inputDevice);
+//                }
+//            }
         }
-        
+
         private void OnEnter(ProximityWatcher sender, Collider args)
         {
             _inputUpdater.SendHapticFeedback(_view.HandType);
         }
-
     }
 }
