@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using Vrlife.Core.Mvc;
@@ -22,7 +23,8 @@ namespace Vrlife.Core.Vr
         [SerializeField] private PlayerHandInputDeviceEventHandler onTriggerReleased;
         [SerializeField] private MonoAnimator animator;
         [SerializeField] private Grabber grabber;
-        
+
+        public Dictionary<ControllerInput, UnityEvent> inputHandler;
         
         public ProximityWatcher Watcher => watcher;
 
