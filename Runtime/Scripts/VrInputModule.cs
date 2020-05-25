@@ -58,6 +58,7 @@ namespace Vrlife.Core.Vr
             public GameObject currentPressed;
             public GameObject currentDragging;
             public GameObject GameObject;
+            public bool IsClicked { get; set; }
         };
 
         private ControllerData[] _controllerDatas;
@@ -140,8 +141,10 @@ namespace Vrlife.Core.Vr
                 // Handle enter and exit events on the GUI controlls that are hit
                 HandlePointerExitAndEnter(data.pointerEvent, data.currentPoint);
 
-                if (inputDevice.Device.InteractionInformation.IsTriggerClicked)
+                if (!inputDevice.IsClicked && inputDevice.Device.InteractionInformation.IsTriggerClicked)
                 {
+                    inputDevice.IsClicked = true;
+                    
                     ClearSelection();
 
                     data.pointerEvent.pressPosition = data.pointerEvent.position;
@@ -199,8 +202,9 @@ namespace Vrlife.Core.Vr
                 } // button down end
 
 
-                if (!inputDevice.Device.InteractionInformation.IsTriggerClicked)
+                if (inputDevice.IsClicked && !inputDevice.Device.InteractionInformation.IsTriggerClicked)
                 {
+                    inputDevice.IsClicked = false;
                     if (data.currentDragging != null)
                     {
                         data.pointerEvent.current = data.currentDragging;
