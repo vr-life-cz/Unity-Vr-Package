@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEngine.XR;
+using Zenject;
 
 
 namespace Vrlife.Core.Vr
@@ -15,14 +16,16 @@ namespace Vrlife.Core.Vr
             
         }
 
+        [Inject] private XrGeneralSettings settings;
+
         private HumanBodyPart _controlledHand = HumanBodyPart.RightHand;
 
         private float distance = 0.8f;
 
         private void Start()
         {
-            LeftHandInputDevice = new PlayerHandInputDevice(HumanBodyPart.LeftHand);
-            RightHandInputDevice = new PlayerHandInputDevice(HumanBodyPart.RightHand);
+            LeftHandInputDevice = new PlayerHandInputDevice(HumanBodyPart.LeftHand,settings);
+            RightHandInputDevice = new PlayerHandInputDevice(HumanBodyPart.RightHand,settings);
         }
 
         public KeyCode ControlCamera = KeyCode.LeftShift;

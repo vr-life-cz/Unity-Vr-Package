@@ -8,10 +8,10 @@ namespace Vrlife.Core.Vr
         public readonly TrackingInformation TrackingInformation;
         public readonly InteractionInformation InteractionInformation;
 
-        public PlayerHandInputDevice(HumanBodyPart part)
+        public PlayerHandInputDevice(HumanBodyPart part, XrGeneralSettings settings)
         {
             TrackingInformation = new TrackingInformation(part);
-            InteractionInformation = new InteractionInformation(part);
+            InteractionInformation = new InteractionInformation(part, settings);
         }
     }
 }

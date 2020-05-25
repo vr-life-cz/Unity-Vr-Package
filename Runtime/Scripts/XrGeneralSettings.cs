@@ -6,5 +6,6 @@ namespace Vrlife.Core.Vr
     public class XrGeneralSettings : ScriptableObject
     {
         public float minTriggerPressureToClick = .8f;
+        public float minTriggerPressureToClickRelease = .2f;
     }
 }
