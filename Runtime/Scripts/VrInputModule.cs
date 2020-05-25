@@ -1,9 +1,16 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.EventSystems;
 using Zenject;
 
 namespace Vrlife.Core.Vr
 {
+//    [Serializable]
+//    public class VrControllerBindings
+//    {
+//        
+//    }
+
     public class VrInputModule : BaseInputModule
     {
         private Camera UICamera;
