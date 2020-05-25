@@ -16,7 +16,7 @@ namespace Vrlife.Core.Vr
     public class ControllerInputBinding
     {
         public ControllerInput input;
-        public UnityEvent[] handlers;
+        public UnityEvent handler;
     }
 
     [Serializable]

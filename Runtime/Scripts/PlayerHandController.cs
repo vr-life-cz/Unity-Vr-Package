@@ -49,10 +49,7 @@ namespace Vrlife.Core.Vr
 
             foreach (var inputBinding in triggerClicks)
             {
-                foreach (var inputBindingHandler in inputBinding.handlers)
-                {
-                    inputBindingHandler?.Invoke();
-                }
+                inputBinding.handler?.Invoke();
             }
         }
 
