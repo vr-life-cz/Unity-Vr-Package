@@ -6,6 +6,7 @@
         TriggerClick,
         PrimaryButtonClick,
         SecondaryButtonClick,
-        JoystickAxis
+        JoystickAxis,
+        GripClick
     }
 }

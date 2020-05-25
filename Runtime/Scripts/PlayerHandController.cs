@@ -15,7 +15,7 @@ namespace Vrlife.Core.Vr
 
         private bool _onReleaseFired;
 
-        private bool _onGrabFired;
+        private bool _onTriggerPressureDown;
 
 
         public PlayerHandController(IPlayerInputUpdater inputUpdater, XrGeneralSettings generalSettings)
@@ -55,7 +55,7 @@ namespace Vrlife.Core.Vr
 
         private bool _isPrimaryButtonDown;
         private bool _isSecondaryButtonDown;
-
+        private bool _isGripDown;
         public void Update()
         {
             var handRootTransform = _view.HandRootTransform;
@@ -74,16 +74,16 @@ namespace Vrlife.Core.Vr
 
             _view.Animator.SetParameter(AnimatorFinger, inputDevice.InteractionInformation.TriggerPressure);
 
-            if (!_onGrabFired && _generalSettings.minTriggerPressureToClick <
+            if (!_onTriggerPressureDown && _generalSettings.minTriggerPressureToClick <
                 inputDevice.InteractionInformation.TriggerPressure)
             {
-                _onGrabFired = true;
+                _onTriggerPressureDown = true;
                 FireInputHandler(ControllerInput.TriggerClick);
             }
-            else if (_onGrabFired && _generalSettings.minTriggerPressureToClickRelease >
+            else if (_onTriggerPressureDown && _generalSettings.minTriggerPressureToClickRelease >
                      inputDevice.InteractionInformation.TriggerPressure)
             {
-                _onGrabFired = false;
+                _onTriggerPressureDown = false;
             }
 
 
@@ -95,6 +95,16 @@ namespace Vrlife.Core.Vr
             else if (_isPrimaryButtonDown && !inputDevice.InteractionInformation.IsPrimaryButtonClicked)
             {
                 _isPrimaryButtonDown = false;
+            }
+
+            if (!_isGripDown && inputDevice.InteractionInformation.GripPressure > _generalSettings.minTriggerPressureToClick)
+            {
+                _isGripDown = true;
+                FireInputHandler(ControllerInput.GripClick);
+            }
+            else if (_isGripDown && inputDevice.InteractionInformation.GripPressure < _generalSettings.minTriggerPressureToClickRelease)
+            {
+                _isGripDown = false;
             }
 
 
