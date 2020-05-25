@@ -53,6 +53,9 @@ namespace Vrlife.Core.Vr
             }
         }
 
+        private bool _isPrimaryButtonDown;
+        private bool _isSecondaryButtonDown;
+
         public void Update()
         {
             var handRootTransform = _view.HandRootTransform;
@@ -83,16 +86,28 @@ namespace Vrlife.Core.Vr
                 _onGrabFired = false;
             }
 
-            if (inputDevice.InteractionInformation.IsPrimaryButtonClicked)
+
+            if (!_isPrimaryButtonDown && inputDevice.InteractionInformation.IsPrimaryButtonClicked)
             {
+                _isPrimaryButtonDown = true;
                 FireInputHandler(ControllerInput.PrimaryButtonClick);
             }
-
-
-            if (inputDevice.InteractionInformation.IsSecondaryButtonClicked)
+            else if (_isPrimaryButtonDown && !inputDevice.InteractionInformation.IsPrimaryButtonClicked))
             {
+                _isPrimaryButtonDown = false;
+            }
+
+
+            if (!_isSecondaryButtonDown && inputDevice.InteractionInformation.IsSecondaryButtonClicked)
+            {
+                _isSecondaryButtonDown = true;
                 FireInputHandler(ControllerInput.SecondaryButtonClick);
             }
+            else if (_isSecondaryButtonDown && !inputDevice.InteractionInformation.IsSecondaryButtonClicked)
+            {
+                _isSecondaryButtonDown = false;
+            }
+
 //           
 //            if (_generalSettings.minTriggerPressureToClick < inputDevice.InteractionInformation.TriggerPressure)
 //            {
