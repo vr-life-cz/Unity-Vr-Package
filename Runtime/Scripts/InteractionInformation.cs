@@ -27,8 +27,37 @@ namespace Vrlife.Core.Vr
 
         public bool IsSecondaryButtonClicked;
 
-        public InteractionInformation(HumanBodyPart part)
+        private bool _isTriggerClicked;
+
+        public bool IsTriggerClicked
         {
+            get
+            {
+                if (_isTriggerClicked)
+                {
+                    if (TriggerPressure < _settings.minTriggerPressureToClickRelease)
+                    {
+                        _isTriggerClicked = false;
+                    }
+                }
+                else
+                {
+                    if (TriggerPressure > _settings.minTriggerPressureToClick)
+                    {
+                        _isTriggerClicked = true;
+                    }
+                }
+
+                return _isTriggerClicked;
+            }
+            
+        } 
+        
+        private XrGeneralSettings _settings;
+        
+        public InteractionInformation(HumanBodyPart part, XrGeneralSettings settings)
+        {
+            _settings = settings;
             Part = part;
         }
     }

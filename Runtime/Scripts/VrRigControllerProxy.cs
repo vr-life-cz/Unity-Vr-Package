@@ -35,7 +35,61 @@ namespace Vrlife.Core.Vr
         private Gradient canTeleportGradient;
         private Gradient cantTeleportGradient;
 
+        private void EnableDefaultMovement()
+        {
+            verticalMovementEnabled = true;
+            horizontalMovementEnabled = false;
+        }
+        
+        public void DisableBothMovement()
+        {
+            verticalMovementEnabled = false;
+            horizontalMovementEnabled = false;
+        }
 
+        public void SwitchMovement()
+        {
+            if (verticalMovementEnabled || horizontalMovementEnabled)
+            {
+                if (verticalMovementEnabled)
+                {
+                    verticalMovementEnabled = false;
+                    horizontalMovementEnabled = true;
+                }
+                else
+                {
+                    verticalMovementEnabled = true;
+                    horizontalMovementEnabled = false;
+                }
+            }
+        }
+        
+        public void ToggleVerticalMovement()
+        {
+            if (!verticalMovementEnabled)
+            {
+                verticalMovementEnabled = true;
+                horizontalMovementEnabled = false;
+            }
+            else
+            {
+                verticalMovementEnabled = false;
+            }
+        }
+        
+        public void ToggleHorizontalMovement()
+        {
+            if (!horizontalMovementEnabled)
+            {
+                horizontalMovementEnabled = true;
+                verticalMovementEnabled = false;
+            }
+            else
+            {
+                horizontalMovementEnabled = false;
+            }
+        }
+        
         private void Awake()
         {
             layerMask = LayerMask.NameToLayer("Everything");
@@ -61,9 +115,11 @@ namespace Vrlife.Core.Vr
             if (teleportationEnabled) Teleport();
         }
 
+       
+        
         private void HorizontalMovement()
         {
-            Vector2 input = inputUpdater.RightHandInputDevice.InteractionInformation.JoystickPosition;
+            Vector2 input = inputUpdater.LeftHandInputDevice.InteractionInformation.JoystickPosition;
 
             Vector3 forward = _camera.transform.forward;
             forward.y = 0f;

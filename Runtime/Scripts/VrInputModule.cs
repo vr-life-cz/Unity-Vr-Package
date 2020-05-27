@@ -1,15 +1,26 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.EventSystems;
 using Zenject;
 
 namespace Vrlife.Core.Vr
 {
+//    [Serializable]
+//    public class VrControllerBindings
+//    {
+//        
+//    }
+
     public class VrInputModule : BaseInputModule
     {
         private Camera UICamera;
 
         private PhysicsRaycaster raycaster;
 
+        public GameObject leftHandLaserPoint;
+        public GameObject rightHandLaserPoint;
+        
+        
         [Inject] private IPlayerInputUpdater _playerInputUpdater;
         public LayerMask layerMask;
 
@@ -19,13 +30,9 @@ namespace Vrlife.Core.Vr
             {
                 new ControllerData
                 {
-                    Device = _playerInputUpdater.RightHandInputDevice
-                },
-                new ControllerData
-                {
-                    Device = _playerInputUpdater.LeftHandInputDevice
-                },
-            
+                    Device = _playerInputUpdater.RightHandInputDevice,
+                    GameObject = rightHandLaserPoint
+                }
             };
 
             // Create a new camera that will be used for raycasts
@@ -57,14 +64,16 @@ namespace Vrlife.Core.Vr
             public GameObject currentPoint;
             public GameObject currentPressed;
             public GameObject currentDragging;
+            public GameObject GameObject;
+            public bool IsClicked { get; set; }
         };
 
         private ControllerData[] _controllerDatas;
 
-        protected void UpdateCameraPosition(PlayerHandInputDevice controller)
+        protected void UpdateCameraPosition(GameObject controller)
         {
-            transform.position = controller.TrackingInformation.Position;
-            transform.rotation = controller.TrackingInformation.Rotation;
+            UICamera.transform.position = controller.transform.position;
+            UICamera.transform.rotation = controller.transform.rotation;
         }
         // clear the current selection
         public void ClearSelection()
@@ -92,7 +101,7 @@ namespace Vrlife.Core.Vr
             {
                 ControllerData data = inputDevice;
                 // Test if UICamera is looking at a GUI element
-                UpdateCameraPosition(data.Device);
+                UpdateCameraPosition(data.GameObject);
 
                 if (data.pointerEvent == null)
                     data.pointerEvent = new LaserPointerEventData(eventSystem);
@@ -139,8 +148,10 @@ namespace Vrlife.Core.Vr
                 // Handle enter and exit events on the GUI controlls that are hit
                 HandlePointerExitAndEnter(data.pointerEvent, data.currentPoint);
 
-                if (inputDevice.Device.InteractionInformation.IsPrimaryButtonClicked)
+                if (!inputDevice.IsClicked && inputDevice.Device.InteractionInformation.IsTriggerClicked)
                 {
+                    inputDevice.IsClicked = true;
+                    
                     ClearSelection();
 
                     data.pointerEvent.pressPosition = data.pointerEvent.position;
@@ -198,8 +209,9 @@ namespace Vrlife.Core.Vr
                 } // button down end
 
 
-                if (!inputDevice.Device.InteractionInformation.IsPrimaryButtonClicked)
+                if (inputDevice.IsClicked && !inputDevice.Device.InteractionInformation.IsTriggerClicked)
                 {
+                    inputDevice.IsClicked = false;
                     if (data.currentDragging != null)
                     {
                         data.pointerEvent.current = data.currentDragging;
