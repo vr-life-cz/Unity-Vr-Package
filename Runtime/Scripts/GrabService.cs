@@ -59,7 +59,7 @@ namespace Vrlife.Core.Vr
                 }
             }
             
-            possessor.grabbedObject.InvokeOnReleased();
+            possessor.grabbedObject.InvokeOnReleased(possessor.Velocity);
             possessor.grabbedObject = null;
             
             

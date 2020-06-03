@@ -17,9 +17,19 @@ namespace Vrlife.Core.Vr
         [Inject] private IPlayerInputUpdater _playerInputUpdater;
 
         private bool _isGrabbed;
+
+        private Vector3 _lastPosition;
+        
+        public Vector3 Velocity { get; private set; }
         
         private void Update()
         {
+            var position = transform.position;
+            
+            Velocity = (position - _lastPosition);
+
+            _lastPosition = position;
+            
             var interaction = part == HumanBodyPart.LeftHand ? _playerInputUpdater.LeftHandInputDevice.InteractionInformation : _playerInputUpdater.RightHandInputDevice.InteractionInformation;
 
             if (interaction.TriggerPressure > 0.8f)

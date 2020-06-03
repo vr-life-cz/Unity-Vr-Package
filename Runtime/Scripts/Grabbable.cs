@@ -13,6 +13,7 @@ namespace Vrlife.Core.Vr
 
         public GrabableEventHandle onGrabbed;
 
+        public Rigidbody grabbableRigidBody;
 
         public GrabableEventHandle onReleased;
 
@@ -57,16 +58,19 @@ namespace Vrlife.Core.Vr
             onGrabbed?.Invoke(this);
         }
 
-        public void InvokeOnReleased()
+        public void InvokeOnReleased(Vector3 velocity)
         {
             if (returnToOriginalParentOnRelease)
             {
-                if (!_parent)
+                if (_parent)
                 {
-                    Debug.LogError("No parent");
+                    transform.SetParent(_parent);
                 }
 
-                transform.SetParent(_parent);
+                if (grabbableRigidBody)
+                {
+                    grabbableRigidBody.velocity = velocity;
+                }
 
                 transform.localPosition = _localOffset;
                 transform.rotation = _original;
