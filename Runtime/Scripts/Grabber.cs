@@ -7,20 +7,47 @@ namespace Vrlife.Core.Vr
     public class Grabber : MonoBehaviour, IDebugInfoProvider
     {
         public ProximityWatcher proximityWatcher;
-
+        
         public Grabbable grabbedObject;
 
         public HumanBodyPart part;
         
         [Inject] private IGrabService _grabService;
 
+        [Inject] private IPlayerInputUpdater _playerInputUpdater;
+
+        private bool _isGrabbed;
+        
+        private void Update()
+        {
+            var interaction = part == HumanBodyPart.LeftHand ? _playerInputUpdater.LeftHandInputDevice.InteractionInformation : _playerInputUpdater.RightHandInputDevice.InteractionInformation;
+
+            if (interaction.TriggerPressure > 0.8f)
+            {
+                if (!_isGrabbed)
+                {
+                   Grab();
+                }
+            }
+            else if (interaction.TriggerPressure < .1f)
+            {
+                if (_isGrabbed)
+                {
+                   Release();
+                }
+            }
+            
+        }
+        
         public void Grab()
         {
+            _isGrabbed = true;
             _grabService.Grab(this);
         }
 
         public void Release()
         {
+            _isGrabbed = false;
             _grabService.Release(this);
         }
 

@@ -11,14 +11,9 @@ namespace Vrlife.Core.Vr
         
         HumanBodyPart HandType { get;  }
 
-        Grabber Grabber { get; }
         
         IAnimatorComponent Animator { get; }
          List<ControllerInputBinding> InputBindings { get; }
         Transform HandRootTransform { get;  }
-
-//        UnityEvent<PlayerHandInputDevice> OnTriggerClicked { get; }
-//        
-//        UnityEvent<PlayerHandInputDevice> OnTriggerReleased { get; }
     }
 }
