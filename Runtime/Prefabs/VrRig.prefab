@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2999120395550425432}
   - component: {fileID: 2034362522}
+  - component: {fileID: 509571770847024507}
   m_Layer: 0
   m_Name: Pointer
   m_TagString: Untagged
@@ -128,6 +129,22 @@ LineRenderer:
     generateLightingData: 0
   m_UseWorldSpace: 1
   m_Loop: 0
+--- !u!114 &509571770847024507
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 122264316495491693}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b65c6d07c035109449826cda6f9d64e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lineRenderer: {fileID: 0}
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!54 &6011308902670634771
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -271,7 +288,9 @@ MonoBehaviour:
   canTeleportColor: {r: 0, g: 0.6686826, b: 1, a: 1}
   cantTeleportColor: {r: 1, g: 0, b: 0, a: 1}
   teleportationEnabled: 1
-  joystickMovementEnabled: 1
+  horizontalMovementEnabled: 1
+  verticalMovementEnabled: 1
+  floorLevel: 0
 --- !u!54 &5766409847903171491
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -529,36 +548,8 @@ MonoBehaviour:
     watcher: {fileID: 5766409847903171481}
     handType: 1
     handRootTransform: {fileID: 5766409847390290886}
-    onTriggerClicked:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 5766409847903171482}
-          m_MethodName: Grab
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-    onTriggerReleased:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 5766409847903171482}
-          m_MethodName: Release
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
     animator: {fileID: 5766409846908090255}
-    grabber: {fileID: 5766409847903171482}
+    inputBindings: []
 --- !u!114 &5766409847903171482
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -629,36 +620,8 @@ MonoBehaviour:
     watcher: {fileID: 5766409847903171480}
     handType: 2
     handRootTransform: {fileID: 5766409847751399253}
-    onTriggerClicked:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 421291196}
-          m_MethodName: Grab
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-    onTriggerReleased:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 421291196}
-          m_MethodName: Release
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
     animator: {fileID: 5766409847984889022}
-    grabber: {fileID: 0}
+    inputBindings: []
 --- !u!114 &421291196
 MonoBehaviour:
   m_ObjectHideFlags: 0
