@@ -158,7 +158,7 @@ namespace Vrlife.Core.Vr
                     data.pointerEvent.pointerPressRaycast = data.pointerEvent.pointerCurrentRaycast;
                     data.pointerEvent.pointerPress = null;
 
-                    // update current pressed if the curser is over an element
+                    // update current pressed if the cursor is over an element
                     if (data.currentPoint != null)
                     {
                         data.currentPressed = data.currentPoint;
@@ -256,6 +256,19 @@ namespace Vrlife.Core.Vr
                     //ExecuteEvents.Execute(controller.gameObject, GetBaseEventData(), ExecuteEvents.updateSelectedHandler);
                 }
             }
+        }
+
+        public override bool IsPointerOverGameObject(int pointerId)
+        {
+            foreach (var controllerData in _controllerDatas)
+            {
+                if (controllerData.pointerEvent.pointerCurrentRaycast.gameObject)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

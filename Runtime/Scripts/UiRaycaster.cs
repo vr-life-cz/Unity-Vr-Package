@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class UiRaycaster : MonoBehaviour
 {
@@ -21,12 +22,12 @@ public class UiRaycaster : MonoBehaviour
         HandleUiRaycast();
     }
     
-    public RaycastHit HandleUiRaycast()
+    public void HandleUiRaycast()
     {
         RaycastHit hit;
-        if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, 3, layerMask))
+        if (EventSystem.current.IsPointerOverGameObject())
         {
-            Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * hit.distance,
+            Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * 200,
                 Color.green);
             lineRenderer.startColor = Color.white;
             lineRenderer.endColor = Color.yellow;
@@ -34,7 +35,7 @@ public class UiRaycaster : MonoBehaviour
             lineRenderer.SetPositions(new Vector3[]
             {
                 transform.position,
-                transform.position + hit.distance * transform.forward
+                transform.position + 20 * transform.forward
             });
         }
         else
@@ -42,7 +43,5 @@ public class UiRaycaster : MonoBehaviour
             Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * 1, Color.red);
             lineRenderer.enabled = false;
         }
-
-        return hit;
     }
 }
