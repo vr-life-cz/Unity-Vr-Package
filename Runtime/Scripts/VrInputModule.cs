@@ -262,7 +262,7 @@ namespace Vrlife.Core.Vr
         {
             foreach (var controllerData in _controllerDatas)
             {
-                if (controllerData.pointerEvent.pointerCurrentRaycast.gameObject)
+                if (controllerData?.pointerEvent?.pointerCurrentRaycast != null && controllerData.pointerEvent.pointerCurrentRaycast.gameObject)
                 {
                     return true;
                 }
