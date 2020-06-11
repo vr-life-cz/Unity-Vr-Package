@@ -17,6 +17,8 @@ namespace Vrlife.Core.Vr
 
         private bool _onTriggerPressureDown;
 
+        private bool _isJoystickClicked;
+
 
         public PlayerHandController(IPlayerInputUpdater inputUpdater, XrGeneralSettings generalSettings)
         {
@@ -52,10 +54,21 @@ namespace Vrlife.Core.Vr
                 inputBinding.handler?.Invoke();
             }
         }
+        
+        private void FireInputHandler(ControllerInput input, InteractionInformation interactionInformation)
+        {
+            var triggerClicks = _view.InputBindings.Where(x => x.input == input);
+
+            foreach (var inputBinding in triggerClicks)
+            {
+                inputBinding.axisHandler?.Invoke(interactionInformation);
+            }
+        }
 
         private bool _isPrimaryButtonDown;
         private bool _isSecondaryButtonDown;
         private bool _isGripDown;
+
         public void Update()
         {
             var handRootTransform = _view.HandRootTransform;
@@ -81,10 +94,18 @@ namespace Vrlife.Core.Vr
                 FireInputHandler(ControllerInput.TriggerClick);
             }
             else if (_onTriggerPressureDown && _generalSettings.minTriggerPressureToClickRelease >
-                     inputDevice.InteractionInformation.TriggerPressure)
+                inputDevice.InteractionInformation.TriggerPressure)
             {
                 _onTriggerPressureDown = false;
+                FireInputHandler(ControllerInput.TriggerRelease);
             }
+
+            if (_generalSettings.minTriggerPressureToClick <
+                inputDevice.InteractionInformation.TriggerPressure)
+            {
+                FireInputHandler(ControllerInput.TriggerHold);
+            }
+
 
 
             if (!_isPrimaryButtonDown && inputDevice.InteractionInformation.IsPrimaryButtonClicked)
@@ -95,17 +116,43 @@ namespace Vrlife.Core.Vr
             else if (_isPrimaryButtonDown && !inputDevice.InteractionInformation.IsPrimaryButtonClicked)
             {
                 _isPrimaryButtonDown = false;
+                FireInputHandler(ControllerInput.PrimaryButtonRelease);
             }
+            
+            if (inputDevice.InteractionInformation.IsPrimaryButtonClicked)
+            {
+                FireInputHandler(ControllerInput.PrimaryButtonHold);
+            }
+            
+            
 
-            if (!_isGripDown && inputDevice.InteractionInformation.GripPressure > _generalSettings.minTriggerPressureToClick)
+            if (!_isGripDown && inputDevice.InteractionInformation.GripPressure >
+                _generalSettings.minTriggerPressureToClick)
             {
                 _isGripDown = true;
                 FireInputHandler(ControllerInput.GripClick);
             }
-            else if (_isGripDown && inputDevice.InteractionInformation.GripPressure < _generalSettings.minTriggerPressureToClickRelease)
+            else if (_isGripDown && inputDevice.InteractionInformation.GripPressure <
+                _generalSettings.minTriggerPressureToClickRelease)
             {
                 _isGripDown = false;
             }
+
+            if (!_isJoystickClicked && inputDevice.InteractionInformation.IsJoystickClicked)
+            {
+                FireInputHandler(ControllerInput.JoystickClick);
+                _isJoystickClicked = true;
+            }
+            else if (_isJoystickClicked && !inputDevice.InteractionInformation.IsJoystickClicked)
+            {
+                _isJoystickClicked = false;
+            }
+
+            if (inputDevice.InteractionInformation.JoystickPosition != Vector2.zero)
+            {
+                FireInputHandler(ControllerInput.JoystickAxis, inputDevice.InteractionInformation);
+            }
+
 
 
             if (!_isSecondaryButtonDown && inputDevice.InteractionInformation.IsSecondaryButtonClicked)
@@ -116,6 +163,12 @@ namespace Vrlife.Core.Vr
             else if (_isSecondaryButtonDown && !inputDevice.InteractionInformation.IsSecondaryButtonClicked)
             {
                 _isSecondaryButtonDown = false;
+                FireInputHandler(ControllerInput.SecondaryButtonRelease);
+            }
+            
+            if (inputDevice.InteractionInformation.IsSecondaryButtonClicked)
+            {
+                FireInputHandler(ControllerInput.SecondaryButtonHold);
             }
 
 //           

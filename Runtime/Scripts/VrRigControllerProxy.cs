@@ -110,16 +110,15 @@ namespace Vrlife.Core.Vr
 
         private void Update()
         {
-            if (horizontalMovementEnabled) HorizontalMovement();
-            if (verticalMovementEnabled) VerticalMovement();
             if (teleportationEnabled) Teleport();
         }
 
        
         
-        private void HorizontalMovement()
+        public void HorizontalMovement(InteractionInformation interactionInformation)
         {
-            Vector2 input = inputUpdater.LeftHandInputDevice.InteractionInformation.JoystickPosition;
+            if (!horizontalMovementEnabled) return;
+            Vector2 input = interactionInformation.JoystickPosition;
 
             Vector3 forward = _camera.transform.forward;
             forward.y = 0f;
@@ -132,9 +131,10 @@ namespace Vrlife.Core.Vr
             transform.Translate(coordinates * movementSpeed * Time.deltaTime);
         }
 
-        private void VerticalMovement()
+        public void VerticalMovement(InteractionInformation interactionInformation)
         {
-            Vector2 input = inputUpdater.LeftHandInputDevice.InteractionInformation.JoystickPosition;
+            if (!verticalMovementEnabled) return;
+            Vector2 input = interactionInformation.JoystickPosition;
             Vector3 coordinates = Vector3.up * input.y;
             if (_camera.transform.position.y > (floorLevel + .5f) || input.y > 0)
             {

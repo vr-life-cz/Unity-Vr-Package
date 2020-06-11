@@ -17,6 +17,13 @@ namespace Vrlife.Core.Vr
     {
         public ControllerInput input;
         public UnityEvent handler;
+        public ControllerAxisHandler axisHandler;
+    }
+
+    [Serializable]
+    public class ControllerAxisHandler : UnityEvent<InteractionInformation>
+    {
+        
     }
 
     [Serializable]
