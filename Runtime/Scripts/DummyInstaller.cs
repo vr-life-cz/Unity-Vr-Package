@@ -13,11 +13,5 @@ public class DummyInstaller : MonoInstaller<DummyInstaller>
             .WithViewModelProcessor<SimpleViewModel, SimpleViewProcessor>();
 
         Container.Bind<IGoogleTextToSpeechService>().To<GoogleTextToSpeechService>().AsSingle();
-
-        Container.BindInterfacesAndSelfTo<CoroutineProcessor>().FromNewComponentOnNewGameObject().AsSingle();
-
-        Container.BindViewController<ISceneTransitorView, ISceneTransitorController>()
-            .WithControllerImplementation<SceneTransitorController>()
-            .WithViewModelProcessor<SceneTransitorViewModel, SceneTransitorProcessor>();
     }
 }

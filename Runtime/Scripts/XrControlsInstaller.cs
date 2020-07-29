@@ -1,4 +1,5 @@
 using Vrlife.Core.Mvc;
+using Vrlife.Core.Mvc.Implementations;
 using Zenject;
 
 namespace Vrlife.Core.Vr
@@ -33,6 +34,13 @@ namespace Vrlife.Core.Vr
 
             Container.BindViewController<IPlayerHandView, IPlayerHandController>()
                 .WithControllerImplementation<PlayerHandController>().WithViewModelProcessor<PlayerHandViewModel, PlayerHandViewProcessor>();
+            
+            
+            Container.BindViewController<ISceneTransitorView, ISceneTransitorController>()
+                .WithControllerImplementation<SceneTransitorController>()
+                .WithViewModelProcessor<SceneTransitorViewModel, SceneTransitorProcessor>();
+            
+            Container.BindInterfacesAndSelfTo<CoroutineProcessor>().FromNewComponentOnNewGameObject().AsSingle();
         }
     }
 }
