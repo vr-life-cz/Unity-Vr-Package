@@ -19,8 +19,8 @@ namespace Vrlife.Core.Vr
 
         public GameObject leftHandLaserPoint;
         public GameObject rightHandLaserPoint;
-
-
+        
+        
         [Inject] private IPlayerInputUpdater _playerInputUpdater;
         public LayerMask layerMask;
 
@@ -75,12 +75,10 @@ namespace Vrlife.Core.Vr
             UICamera.transform.position = controller.transform.position;
             UICamera.transform.rotation = controller.transform.rotation;
         }
-
         // clear the current selection
         public void ClearSelection()
         {
-            if (base.eventSystem.currentSelectedGameObject)
-            {
+            if(base.eventSystem.currentSelectedGameObject) {
                 base.eventSystem.SetSelectedGameObject(null);
             }
         }
@@ -90,14 +88,14 @@ namespace Vrlife.Core.Vr
         {
             ClearSelection();
 
-            if (ExecuteEvents.GetEventHandler<ISelectHandler>(go))
-            {
+            if(ExecuteEvents.GetEventHandler<ISelectHandler>(go)) {
                 base.eventSystem.SetSelectedGameObject(go);
             }
         }
-
+    
         public override void Process()
         {
+        
             raycaster.eventMask = layerMask;
             foreach (var inputDevice in _controllerDatas)
             {
@@ -111,18 +109,18 @@ namespace Vrlife.Core.Vr
                     data.pointerEvent.Reset();
 
                 data.pointerEvent.delta = Vector2.zero;
-
+            
                 data.pointerEvent.position = new Vector2(UICamera.pixelWidth * 0.5f, UICamera.pixelHeight * 0.5f);
-
+            
                 //data.pointerEvent.scrollDelta = Vector2.zero;
 
                 Debug.DrawRay(transform.position, transform.forward, Color.red);
-
+            
                 // trigger a raycast
                 eventSystem.RaycastAll(data.pointerEvent, m_RaycastResultCache);
-
+            
                 data.pointerEvent.pointerCurrentRaycast = FindFirstRaycast(m_RaycastResultCache);
-
+            
                 m_RaycastResultCache.Clear();
 
                 // make sure our controller knows about the raycast result
@@ -153,7 +151,7 @@ namespace Vrlife.Core.Vr
                 if (!inputDevice.IsClicked && inputDevice.Device.InteractionInformation.IsTriggerClicked)
                 {
                     inputDevice.IsClicked = true;
-
+                    
                     ClearSelection();
 
                     data.pointerEvent.pressPosition = data.pointerEvent.position;
@@ -164,14 +162,14 @@ namespace Vrlife.Core.Vr
                     if (data.currentPoint != null)
                     {
                         data.currentPressed = data.currentPoint;
-
+                    
                         data.pointerEvent.current = data.currentPressed;
-
+                    
                         GameObject newPressed = ExecuteEvents.ExecuteHierarchy(data.currentPressed, data.pointerEvent,
                             ExecuteEvents.pointerDownHandler);
-
+                    
                         ExecuteEvents.Execute(gameObject, data.pointerEvent, ExecuteEvents.pointerDownHandler);
-
+                    
                         if (newPressed == null)
                         {
                             // some UI elements might only have click handler and not pointer down handler
@@ -221,8 +219,7 @@ namespace Vrlife.Core.Vr
                         ExecuteEvents.Execute(gameObject, data.pointerEvent, ExecuteEvents.endDragHandler);
                         if (data.currentPoint != null)
                         {
-                            ExecuteEvents.ExecuteHierarchy(data.currentPoint, data.pointerEvent,
-                                ExecuteEvents.dropHandler);
+                            ExecuteEvents.ExecuteHierarchy(data.currentPoint, data.pointerEvent, ExecuteEvents.dropHandler);
                         }
 
                         data.pointerEvent.pointerDrag = null;

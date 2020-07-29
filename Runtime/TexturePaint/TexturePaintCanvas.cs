@@ -21,6 +21,7 @@ namespace Vrlife.Core.TexturePaint
         private static readonly int MaskMap = Shader.PropertyToID("_Mask");
         private static readonly int ColorMap = Shader.PropertyToID("_ColorMap");
         private static readonly int BaseTexture = Shader.PropertyToID("_BaseTexture");
+        private static readonly int ShowBackground = Shader.PropertyToID("_ShowBackground");
 
 
         private CustomRenderTexture maskTexture;
@@ -68,12 +69,15 @@ namespace Vrlife.Core.TexturePaint
 
         private RaycastHit[] _hits = new RaycastHit[5];
 
+        public bool IsBackgroundVisible = true;
+
         // Update is called once per frame
         void FixedUpdate()
         {
-
+            mergeMaterial.SetInt(ShowBackground, IsBackgroundVisible ? 1 : 0);
+            
             var paintBrush = _brushes.FirstOrDefault();
-           
+
             if (!paintBrush) return;
 
             var ray = paintBrush.GetRay();
@@ -93,7 +97,7 @@ namespace Vrlife.Core.TexturePaint
                 if (hitInfo.transform != transform) continue;
 
                 var hitInfoTextureCoord = hitInfo.textureCoord;
-                
+
                 maskMaterial.SetColor(DrawColor, Color.blue);
 
                 maskMaterial.SetFloat(BrushStrength, paintBrush.Strength);
@@ -133,8 +137,8 @@ namespace Vrlife.Core.TexturePaint
 
         private void OnGUI()
         {
-//            GUI.DrawTexture(new Rect(0, 0, 256, 256), maskTexture, ScaleMode.StretchToFill, false, 1);
-//            GUI.DrawTexture(new Rect(0, 256, 256, 256), colorTexture, ScaleMode.StretchToFill, false, 1);
+            GUI.DrawTexture(new Rect(0, 0, 256, 256), maskTexture, ScaleMode.StretchToFill, false, 1);
+            GUI.DrawTexture(new Rect(0, 256, 256, 256), colorTexture, ScaleMode.StretchToFill, false, 1);
         }
 
         public void ClearAndSetCanvasBackground(Texture2D background)

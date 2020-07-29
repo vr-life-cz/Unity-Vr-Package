@@ -6,6 +6,8 @@ using UnityEngine.EventSystems;
 
 public class UiRaycaster : MonoBehaviour
 {
+    public bool shouldRaycast = true;
+
     [SerializeField] private LineRenderer lineRenderer;
 
     [SerializeField] private LayerMask layerMask;
@@ -24,6 +26,7 @@ public class UiRaycaster : MonoBehaviour
     
     public void HandleUiRaycast()
     {
+        if (!shouldRaycast) return;
         RaycastHit hit;
         if (EventSystem.current.IsPointerOverGameObject())
         {
