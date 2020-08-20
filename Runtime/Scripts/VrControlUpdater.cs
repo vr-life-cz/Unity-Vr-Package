@@ -32,12 +32,15 @@ namespace Vrlife.Core.Vr
 
         public void SendHapticFeedback(HumanBodyPart handType)
         {
+            if (!settings.allowVibration) return;
             switch (handType)
             {
                 case HumanBodyPart.LeftHand:
+                    if (_leftHandImpulses.Count >= 1 && !settings.allowVibrationStacking) return;
                     _leftHandImpulses.Push(HapticSignal.Default);
                     break;
                 case HumanBodyPart.RightHand:
+                    if (_rightHandImpulses.Count >= 1 && !settings.allowVibrationStacking) return;
                     _rightHandImpulses.Push(HapticSignal.Default);
                     break;
                 default:
@@ -75,7 +78,7 @@ namespace Vrlife.Core.Vr
             if (_subsystems.Count == 0)
             {
                 XRDevice.SetTrackingSpaceType(TrackingSpaceType.RoomScale);
-                Debug.LogError("No Subsystems detected");
+                Debug.LogWarning("No Subsystems detected");
             }
 
             impulse = new byte[20];
