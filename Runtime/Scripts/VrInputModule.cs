@@ -245,6 +245,8 @@ namespace Vrlife.Core.Vr
                         data.pointerEvent.pointerPress = null;
                         data.currentPressed = null;
                     }
+                    
+                    ClearSelection();
                 }
 
 
