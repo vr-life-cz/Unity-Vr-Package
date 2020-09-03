@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 using Zenject;
 
 namespace Vrlife.Core.Vr
@@ -26,6 +27,7 @@ namespace Vrlife.Core.Vr
 
         private void Start()
         {
+            SceneManager.sceneLoaded += OnSceneLoaded;
             _controllerDatas = new[]
             {
                 new ControllerData
@@ -49,9 +51,17 @@ namespace Vrlife.Core.Vr
 
             // Find canvases in the scene and assign our custom
             // UICamera to them
+        }
+        
+        private void OnSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
+        {
+            // Find canvases in the scene and assign our custom
+            // UICamera to them
             Canvas[] canvases = Resources.FindObjectsOfTypeAll<Canvas>();
+            Debug.Log(canvases.Length);
             foreach (Canvas canvas in canvases)
             {
+                Debug.Log(canvas.name);
                 canvas.worldCamera = UICamera;
             }
         }
