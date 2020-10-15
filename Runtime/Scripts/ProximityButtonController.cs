@@ -2,7 +2,6 @@
 using UnityEngine;
 using UnityEngine.Events;
 using Vrlife.Core;
-using Button = UnityEngine.UI.Button;
 
 public class ProximityButtonController : MonoBehaviour
 {
@@ -12,16 +11,26 @@ public class ProximityButtonController : MonoBehaviour
     public GameObject button;
     private static readonly int _shaderProgress = Shader.PropertyToID("_Progress");
     private static readonly int _shaderIsPulsating = Shader.PropertyToID("_IsPulsating");
-    public UnityEvent onClick;
+    private bool progressLocked = false;
+   
 
     [ReadOnly] public bool isTouching;
     public bool isPulsating;
+    public bool hideOnClick = true;
+    public bool keepMaxProgress = false;
+    
+    public UnityEvent onClick;
 
     [InlineButton("SwitchDisabled", "Switch isDisabled")]
     public bool buttonDisabled;
 
     [InlineButton("SwitchHidden", "Switch isHidden")]
     public bool buttonHidden;
+
+    public delegate void OnClickEventDelegate();
+
+    public event OnClickEventDelegate ClickEvent;
+
 
     public void TriggerEnter(ProximityWatcher proximityWatcher, Collider collider)
     {
@@ -76,15 +85,36 @@ public class ProximityButtonController : MonoBehaviour
             : Mathf.Clamp01(progress - speedMultiplier * Time.deltaTime);
 
 
-        if (Mathf.Approximately(progress, 1))
+        if (Mathf.Approximately(progress, 1) && !progressLocked)
         {
             onClick?.Invoke();
-            SetHidden(true);
+            if (hideOnClick) SetHidden(true);
             isTouching = false;
-            progress = 0;
+            if (!keepMaxProgress)
+            {
+                progress = 0;
+            }
+            else
+            {
+                progressLocked = true;
+            }
+            ClickEvent?.Invoke();
         }
 
         loadingRenderer.material.SetFloat(_shaderProgress, progress);
         loadingRenderer.material.SetInt(_shaderIsPulsating, isPulsating ? 1 : 0);
+    }
+
+    public void ToggleSiblings(bool enable)
+    {
+        foreach (Transform sibling in transform.parent)
+        {
+            sibling.gameObject.SetActive(enable);
+        }
+    }
+    
+    public void SetPulsating( bool pulsating)
+    {
+        isPulsating = pulsating;
     }
 }
