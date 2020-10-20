@@ -85,7 +85,7 @@ namespace Vrlife.Core.Vr
 
             handRootTransform.localRotation = trackingInformation.Rotation;
 
-            _view.Animator.SetParameter(AnimatorFinger, inputDevice.InteractionInformation.TriggerPressure);
+            _view?.Animator?.SetParameter(AnimatorFinger, inputDevice.InteractionInformation.TriggerPressure);
 
             if (!_onTriggerPressureDown && _generalSettings.minTriggerPressureToClick <
                 inputDevice.InteractionInformation.TriggerPressure)
