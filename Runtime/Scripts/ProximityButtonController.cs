@@ -102,7 +102,7 @@ public class ProximityButtonController : MonoBehaviour
         }
 
         loadingRenderer.material.SetFloat(_shaderProgress, progress);
-        loadingRenderer.material.SetInt(_shaderIsPulsating, isPulsating ? 1 : 0);
+        loadingRenderer.material.SetInt(_shaderIsPulsating, (isPulsating && progress < 0.01f && !isTouching) ? 1 : 0);
     }
 
     public void ToggleSiblings(bool enable)
