@@ -82,7 +82,7 @@ public class ProximityButtonController : MonoBehaviour
     {
         progress = isTouching
             ? Mathf.Clamp01(progress + speedMultiplier * Time.deltaTime)
-            : Mathf.Clamp01(progress - speedMultiplier * Time.deltaTime);
+            : progressLocked ? progress : Mathf.Clamp01(progress - speedMultiplier * Time.deltaTime);
 
 
         if (Mathf.Approximately(progress, 1) && !progressLocked)
