@@ -12,13 +12,13 @@ public class ProximityButtonController : MonoBehaviour
     private static readonly int _shaderProgress = Shader.PropertyToID("_Progress");
     private static readonly int _shaderIsPulsating = Shader.PropertyToID("_IsPulsating");
     private bool progressLocked = false;
-   
+
 
     [ReadOnly] public bool isTouching;
     public bool isPulsating;
     public bool hideOnClick = true;
     public bool keepMaxProgress = false;
-    
+
     public UnityEvent onClick;
 
     [InlineButton("SwitchDisabled", "Switch isDisabled")]
@@ -82,7 +82,9 @@ public class ProximityButtonController : MonoBehaviour
     {
         progress = isTouching
             ? Mathf.Clamp01(progress + speedMultiplier * Time.deltaTime)
-            : progressLocked ? progress : Mathf.Clamp01(progress - speedMultiplier * Time.deltaTime);
+            : progressLocked
+                ? progress
+                : Mathf.Clamp01(progress - speedMultiplier * Time.deltaTime);
 
 
         if (Mathf.Approximately(progress, 1) && !progressLocked)
@@ -98,11 +100,22 @@ public class ProximityButtonController : MonoBehaviour
             {
                 progressLocked = true;
             }
+
             ClickEvent?.Invoke();
         }
 
-        loadingRenderer.material.SetFloat(_shaderProgress, progress);
-        loadingRenderer.material.SetInt(_shaderIsPulsating, (isPulsating && progress < 0.01f && !isTouching) ? 1 : 0);
+        foreach (Material material in loadingRenderer.materials)
+        {
+            try
+            {
+                material.SetFloat(_shaderProgress, progress);
+                material.SetInt(_shaderIsPulsating, (isPulsating && progress < 0.01f && !isTouching) ? 1 : 0);
+            }
+            catch
+            {
+                continue;
+            }
+        }
     }
 
     public void ToggleSiblings(bool enable)
@@ -112,8 +125,8 @@ public class ProximityButtonController : MonoBehaviour
             sibling.gameObject.SetActive(enable);
         }
     }
-    
-    public void SetPulsating( bool pulsating)
+
+    public void SetPulsating(bool pulsating)
     {
         isPulsating = pulsating;
     }
