@@ -1,4 +1,6 @@
-﻿using Sirenix.OdinInspector;
+﻿using System;
+using Sirenix.OdinInspector;
+using Sirenix.Serialization;
 using UnityEngine;
 using UnityEngine.Events;
 using Vrlife.Core;
@@ -129,5 +131,17 @@ public class ProximityButtonController : MonoBehaviour
     public void SetPulsating(bool pulsating)
     {
         isPulsating = pulsating;
+    }
+
+    [Button]
+    public void Reset()
+    {
+        progress = 0;
+        progressLocked = false;
+        SetPulsating(false);
+        SetHidden(false);
+        SetActive(true);
+        hideOnClick = false;
+        keepMaxProgress = false;
     }
 }
