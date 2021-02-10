@@ -144,4 +144,22 @@ public class ProximityButtonController : MonoBehaviour
         hideOnClick = false;
         keepMaxProgress = false;
     }
+    
+    [Button]
+    public void Click()
+    {
+        onClick?.Invoke();
+        if (hideOnClick) SetHidden(true);
+        isTouching = false;
+        if (!keepMaxProgress)
+        {
+            progress = 0;
+        }
+        else
+        {
+            progressLocked = true;
+        }
+
+        ClickEvent?.Invoke();
+    }
 }
