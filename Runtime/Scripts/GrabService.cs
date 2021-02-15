@@ -22,7 +22,7 @@ namespace Vrlife.Core.Vr
             var grabbable = possessor.proximityWatcher.ProximityObjects.Select(x => x.GetComponent<Grabbable>())
                 .FirstOrDefault(x => x != null);
 
-            if (grabbable == null) return;
+            if (grabbable is null) return;
 
             if (possessor.grabbedObject)
             {
@@ -31,7 +31,7 @@ namespace Vrlife.Core.Vr
 
             possessor.grabbedObject = grabbable;
 
-            grabbable.grabedBy = possessor;
+            grabbable.grabbedBy = possessor;
 
             grabbable.transform.SetParent(possessor.transform, grabbable.worldPositionStays);
 
@@ -42,7 +42,7 @@ namespace Vrlife.Core.Vr
         {
             if (!possessor.grabbedObject) return;
 
-            possessor.grabbedObject.grabedBy = null;
+            possessor.grabbedObject.grabbedBy = null;
             possessor.grabbedObject.transform.SetParent(null);
            
             if (possessor.part != HumanBodyPart.Unknown)
