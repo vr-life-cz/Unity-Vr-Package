@@ -5,11 +5,13 @@ namespace Vrlife.Core.Vr
     [RequireComponent(typeof(Collider))]
     public class Grabbable : MonoBehaviour
     {
+        public bool canBeGrabbed = true;
+        
         public bool worldPositionStays = true;
 
         public bool returnToOriginalParentOnRelease = true;
 
-        public Grabber grabedBy;
+        public Grabber grabbedBy;
 
         public GrabableEventHandle onGrabbed;
 
@@ -55,7 +57,7 @@ namespace Vrlife.Core.Vr
 
         public void InvokeOnGrabbed()
         {
-            onGrabbed?.Invoke(this);
+            if (canBeGrabbed) onGrabbed?.Invoke(this);
         }
 
         public void InvokeOnReleased(Vector3 velocity)
