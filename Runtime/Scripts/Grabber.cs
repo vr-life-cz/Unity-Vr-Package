@@ -69,7 +69,16 @@ namespace Vrlife.Core.Vr
 
         public string GetDebugInfo()
         {
-            return $"Proximity Obj - {proximityWatcher.ProximityObjects.FirstOrDefault()}\nGrabbed - {grabbedObject}";
+            try
+            {
+                return
+                    $"Proximity Obj - {proximityWatcher.ProximityObjects.FirstOrDefault()}\nGrabbed - {grabbedObject}";
+            }
+            catch
+            {
+                return "null";
+            }
+            
         }
 
         public string Label => gameObject.name;
