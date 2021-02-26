@@ -1,6 +1,7 @@
 ﻿using UnityEditor;
 using UnityEditor.PackageManager;
 using UnityEngine;
+using Vrlife.Core;
 
 namespace Plugins.com.vrlife.vr.Editor
 {
@@ -11,13 +12,11 @@ namespace Plugins.com.vrlife.vr.Editor
         {
             static AutomaticUpdate()
             {
-                try
+                Client.Add("https://github.com/virtual-real-life/Unity-Vr-Package.git");
+
+                if (Client.Embed("com.vrlife.core") is null)
                 {
-                    Client.Add("https://github.com/virtual-real-life/Unity-Vr-Package.git");
-                }
-                catch
-                {
-                    Debug.Log("VRL VR package already exists.");
+                    Client.Add("https://github.com/virtual-real-life/Unity-Core-Package.git");
                 }
             }
         }
