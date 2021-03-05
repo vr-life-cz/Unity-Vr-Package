@@ -12,6 +12,7 @@ namespace Plugins.com.vrlife.vr.Editor
         {
             static AutomaticUpdate()
             {
+                if (Application.productName == "Unity Core Package") return;
                 Client.Add("https://github.com/virtual-real-life/Unity-Vr-Package.git");
 
                 if (Client.Embed("com.vrlife.core") is null)
