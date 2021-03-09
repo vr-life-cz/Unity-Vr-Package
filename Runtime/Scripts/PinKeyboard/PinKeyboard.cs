@@ -30,7 +30,7 @@ namespace Plugins.com.vrlife.vr.Runtime.Scripts.PinKeyboard
 
         private void Start()
         {
-            onConfirm = new PinSubmitEvent();
+            // onConfirm = new PinSubmitEvent();
         }
 
         public void ButtonPress(int value)
@@ -46,7 +46,7 @@ namespace Plugins.com.vrlife.vr.Runtime.Scripts.PinKeyboard
         {
             if (_content != string.Empty)
             {
-                _content.Remove(_content.Length - 1);
+                _content = _content.Remove(_content.Length - 1);
             }
             UpdateText();
         }
