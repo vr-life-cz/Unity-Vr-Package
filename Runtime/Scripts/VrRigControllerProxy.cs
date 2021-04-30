@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using UnityEngine;
 using Zenject;
@@ -22,6 +23,9 @@ namespace Vrlife.Core.Vr
         [Header("Controls")]
         [Description("Enables teleportation around using B button on right controller.")]
         public bool teleportationEnabled = true;
+        [Description("Changes whether the teleportation is a straight line or a ballistic curve")]
+        public bool useBallisticTeleportation = true;
+        
         [Description("Enables 'Walking' along X and Z axis using right joystick.")]
         public bool horizontalMovementEnabled = true;
         [Description("Enables 'Flying' along Y axis using left joystick.")]
@@ -147,29 +151,88 @@ namespace Vrlife.Core.Vr
         {
             if (inputUpdater.RightHandInputDevice.InteractionInformation.IsPrimaryButtonClicked)
             {
-                Ray raycast = new Ray(_camera.transform.position, -pointerHand.transform.forward.normalized);
-                bool rayHit = Physics.Raycast(raycast, out hitObject, float.MaxValue, layerMask);
-                if (rayHit)
+                if (useBallisticTeleportation)
                 {
-                    pointer.colorGradient = canTeleportGradient;
-                    pointer.SetPositions(new Vector3[]
+                    float decayRate = 0.05f;
+                    float stepDistance = .5f;
+                    int maxSteps = 50;
+                    int currentSteps = 0;
+                    bool rayHit = false;
+
+                    Vector3 startingPosition = pointerHand.transform.position;
+                    Vector3 pointingDirection = pointerHand.transform.forward.normalized;
+                    Vector3 currentPosition = startingPosition;
+
+                    List<Vector3> positions = new List<Vector3> {startingPosition};
+                    pointer.positionCount = 1;
+
+
+                    while (currentSteps <= maxSteps && currentPosition.y >= floorLevel && !rayHit)
                     {
-                        pointerHand.transform.position,
-                        hitObject.point
-                    });
+                        
+                        Vector3 decayedVector = Mathf.Clamp01(decayRate * currentSteps) * Vector3.down +
+                                                pointingDirection * Mathf.Clamp01(1 - decayRate * currentSteps);
+                        
+                        decayedVector = decayedVector.normalized * stepDistance; 
+
+
+                        Ray raycast = new Ray(currentPosition, currentPosition + decayedVector);
+                        Physics.Raycast(raycast, out hitObject, stepDistance, layerMask);
+                        rayHit = !(hitObject.transform is null);
+
+                        currentPosition += decayedVector;
+                        
+                        currentSteps++;
+                        
+                        positions.Add(currentPosition);
+
+                        pointer.positionCount++;
+                        pointer.SetPositions(positions.ToArray());
+                    }
                     pointer.enabled = true;
-                    teleportReady = true;
+
+                    if (rayHit)
+                    {
+                        pointer.startColor = Color.green;
+                        pointer.endColor = Color.green;
+                        teleportReady = true;
+                    }
+                    else
+                    {
+                        pointer.startColor = Color.red;
+                        pointer.endColor = Color.red;
+                    }
+                    
+
+                    
                 }
                 else
                 {
-                    pointer.colorGradient = cantTeleportGradient;
-                    pointer.SetPositions(new Vector3[]
+                    Ray raycast = new Ray(_camera.transform.position, pointerHand.transform.forward.normalized);
+                    bool rayHit = Physics.Raycast(raycast, out hitObject, float.MaxValue, layerMask);
+                    if (rayHit)
                     {
-                        pointerHand.transform.position,
-                        pointerHand.transform.position - pointerHand.transform.forward
-                    });
-                    pointer.enabled = true;
+                        pointer.colorGradient = canTeleportGradient;
+                        pointer.SetPositions(new Vector3[]
+                        {
+                            pointerHand.transform.position,
+                            hitObject.point
+                        });
+                        pointer.enabled = true;
+                        teleportReady = true;
+                    }
+                    else
+                    {
+                        pointer.colorGradient = cantTeleportGradient;
+                        pointer.SetPositions(new Vector3[]
+                        {
+                            pointerHand.transform.position,
+                            pointerHand.transform.position + pointerHand.transform.forward
+                        });
+                        pointer.enabled = true;
+                    }
                 }
+                
             }
             else
             {
