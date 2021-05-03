@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.UIElements;
 using Zenject;
 
 namespace Vrlife.Core.Vr
@@ -15,23 +17,27 @@ namespace Vrlife.Core.Vr
         public GameObject pointerHand;
         public LineRenderer pointer;
         public LayerMask layerMask;
-        [ColorUsage(true, false)]
-        public Color canTeleportColor;
-        [ColorUsage(true, false)]
-        public Color cantTeleportColor;
+        [ColorUsage(true, false)] public Color canTeleportColor;
+        [ColorUsage(true, false)] public Color cantTeleportColor;
 
-        [Header("Controls")]
-        [Description("Enables teleportation around using B button on right controller.")]
+        [BoxGroup("Controls")] [Description("Enables teleportation around using B button on right controller.")]
         public bool teleportationEnabled = true;
+
+        [BoxGroup("Controls")]
         [Description("Changes whether the teleportation is a straight line or a ballistic curve")]
         public bool useBallisticTeleportation = true;
-        
-        [Description("Enables 'Walking' along X and Z axis using right joystick.")]
+
+        [BoxGroup("Controls")] [Description("Enables 'Walking' along X and Z axis using right joystick.")]
         public bool horizontalMovementEnabled = true;
-        [Description("Enables 'Flying' along Y axis using left joystick.")]
+
+        [BoxGroup("Controls")] [Description("Enables 'Flying' along Y axis using left joystick.")]
         public bool verticalMovementEnabled = true;
-        [Description("Level of the floor. You can't go below it.")] 
+
+        [BoxGroup("Controls")] [Description("Level of the floor. You can't go below it.")]
         public float floorLevel = 0f;
+
+        [BoxGroup("Controls")] [Description("If enabled, the horizontal and vertical movement will respect colliders")]
+        public bool respectColliders;
 
         private RaycastHit hitObject;
         private bool teleportReady;
@@ -39,77 +45,25 @@ namespace Vrlife.Core.Vr
         private Gradient canTeleportGradient;
         private Gradient cantTeleportGradient;
 
-        private void EnableDefaultMovement()
-        {
-            verticalMovementEnabled = true;
-            horizontalMovementEnabled = false;
-        }
-        
-        public void DisableBothMovement()
-        {
-            verticalMovementEnabled = false;
-            horizontalMovementEnabled = false;
-        }
-
-        public void SwitchMovement()
-        {
-            if (verticalMovementEnabled || horizontalMovementEnabled)
-            {
-                if (verticalMovementEnabled)
-                {
-                    verticalMovementEnabled = false;
-                    horizontalMovementEnabled = true;
-                }
-                else
-                {
-                    verticalMovementEnabled = true;
-                    horizontalMovementEnabled = false;
-                }
-            }
-        }
-        
-        public void ToggleVerticalMovement()
-        {
-            if (!verticalMovementEnabled)
-            {
-                verticalMovementEnabled = true;
-                horizontalMovementEnabled = false;
-            }
-            else
-            {
-                verticalMovementEnabled = false;
-            }
-        }
-        
-        public void ToggleHorizontalMovement()
-        {
-            if (!horizontalMovementEnabled)
-            {
-                horizontalMovementEnabled = true;
-                verticalMovementEnabled = false;
-            }
-            else
-            {
-                horizontalMovementEnabled = false;
-            }
-        }
-        
         private void Awake()
         {
             layerMask = LayerMask.NameToLayer("Everything");
 
             canTeleportGradient = new Gradient();
             canTeleportGradient.SetKeys(
-                new GradientColorKey[] { new GradientColorKey(canTeleportColor, 0.0f), new GradientColorKey(Color.white, 1.0f) },
-                new GradientAlphaKey[] { new GradientAlphaKey(1f, 0.0f), new GradientAlphaKey(1f, 0.95f), new GradientAlphaKey(0f, 1f) }
-            );    
-        
+                new GradientColorKey[]
+                    {new GradientColorKey(canTeleportColor, 0.0f), new GradientColorKey(Color.white, 1.0f)},
+                new GradientAlphaKey[]
+                    {new GradientAlphaKey(1f, 0.0f), new GradientAlphaKey(1f, 0.95f), new GradientAlphaKey(0f, 1f)}
+            );
+
             cantTeleportGradient = new Gradient();
             cantTeleportGradient.SetKeys(
-                new GradientColorKey[] { new GradientColorKey(cantTeleportColor, 0.0f), new GradientColorKey(Color.white, 1.0f) },
-                new GradientAlphaKey[] { new GradientAlphaKey(1f, 0.0f), new GradientAlphaKey(1f, 0.95f), new GradientAlphaKey(0f, 1f) }
+                new GradientColorKey[]
+                    {new GradientColorKey(cantTeleportColor, 0.0f), new GradientColorKey(Color.white, 1.0f)},
+                new GradientAlphaKey[]
+                    {new GradientAlphaKey(1f, 0.0f), new GradientAlphaKey(1f, 0.95f), new GradientAlphaKey(0f, 1f)}
             );
-            
         }
 
         private void Update()
@@ -117,8 +71,7 @@ namespace Vrlife.Core.Vr
             if (teleportationEnabled) Teleport();
         }
 
-       
-        
+
         public void HorizontalMovement(InteractionInformation interactionInformation)
         {
             if (!horizontalMovementEnabled) return;
@@ -132,6 +85,41 @@ namespace Vrlife.Core.Vr
             right.Normalize();
 
             Vector3 coordinates = right * input.x + forward * input.y;
+
+            // Respecting colliders
+
+            if (respectColliders)
+            {
+                Vector3 cameraPosition = _camera.transform.position;
+                
+                // walls
+                Ray raycast = new Ray(cameraPosition, coordinates);
+                if (Physics.SphereCast(raycast, .1f, .5f))
+                {
+                    return;
+                }
+
+                // slanted surfaces / stairs
+                Vector3 movementPoint = new Vector3(coordinates.x, transform.position.y, coordinates.z);
+                Vector3 onTheGround = new Vector3(movementPoint.x / 2f, movementPoint.y - cameraPosition.y,
+                    movementPoint.z / 2f);
+
+                float cameraHeight = _camera.transform.localPosition.y;
+
+                Ray surfaceRay = new Ray(cameraPosition, onTheGround);
+
+                Physics.SphereCast(surfaceRay, .1f, out RaycastHit hit);
+
+                float difference = cameraHeight - hit.distance;
+
+
+                if (Math.Abs(difference) >= 0.1f)
+                {
+                    coordinates = new Vector3(coordinates.x, coordinates.y + difference, coordinates.z);
+                }
+            }
+
+
             transform.Translate(coordinates * movementSpeed * Time.deltaTime);
         }
 
@@ -144,7 +132,6 @@ namespace Vrlife.Core.Vr
             {
                 transform.Translate(coordinates * movementSpeed * Time.deltaTime);
             }
-            
         }
 
         private void Teleport()
@@ -154,7 +141,7 @@ namespace Vrlife.Core.Vr
                 if (useBallisticTeleportation)
                 {
                     float decayRate = 0.05f;
-                    float stepDistance = .5f;
+                    float stepDistance = 1f;
                     int maxSteps = 128;
                     int currentSteps = 0;
                     bool rayHit = false;
@@ -169,11 +156,10 @@ namespace Vrlife.Core.Vr
 
                     while (currentSteps <= maxSteps && currentPosition.y >= floorLevel && !rayHit)
                     {
-                        
                         Vector3 decayedVector = Mathf.Clamp01(decayRate * currentSteps) * Vector3.down +
                                                 pointingDirection * Mathf.Clamp01(1 - decayRate * currentSteps);
-                        
-                        decayedVector = decayedVector.normalized * stepDistance; 
+
+                        decayedVector = decayedVector.normalized * stepDistance;
 
 
                         Ray raycast = new Ray(currentPosition, decayedVector);
@@ -182,14 +168,15 @@ namespace Vrlife.Core.Vr
                         rayHit = !(hitObject.transform is null);
 
                         currentPosition += decayedVector;
-                        
+
                         currentSteps++;
-                        
+
                         positions.Add(currentPosition);
 
                         pointer.positionCount++;
                         pointer.SetPositions(positions.ToArray());
                     }
+
                     pointer.enabled = true;
 
                     if (rayHit)
@@ -203,9 +190,6 @@ namespace Vrlife.Core.Vr
                         pointer.startColor = cantTeleportColor;
                         pointer.endColor = cantTeleportColor;
                     }
-                    
-
-                    
                 }
                 else
                 {
@@ -233,15 +217,16 @@ namespace Vrlife.Core.Vr
                         pointer.enabled = true;
                     }
                 }
-                
             }
             else
             {
                 if (teleportReady)
                 {
-                    transform.position = new Vector3(hitObject.point.x - _camera.transform.localPosition.x, hitObject.point.y, hitObject.point.z - _camera.transform.localPosition.z);
+                    transform.position = new Vector3(hitObject.point.x - _camera.transform.localPosition.x,
+                        hitObject.point.y, hitObject.point.z - _camera.transform.localPosition.z);
                     teleportReady = false;
                 }
+
                 pointer.enabled = false;
             }
         }
