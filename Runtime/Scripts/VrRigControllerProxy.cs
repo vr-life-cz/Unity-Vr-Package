@@ -155,7 +155,7 @@ namespace Vrlife.Core.Vr
                 {
                     float decayRate = 0.05f;
                     float stepDistance = .5f;
-                    int maxSteps = 50;
+                    int maxSteps = 128;
                     int currentSteps = 0;
                     bool rayHit = false;
 
@@ -176,8 +176,9 @@ namespace Vrlife.Core.Vr
                         decayedVector = decayedVector.normalized * stepDistance; 
 
 
-                        Ray raycast = new Ray(currentPosition, currentPosition + decayedVector);
+                        Ray raycast = new Ray(currentPosition, decayedVector);
                         Physics.Raycast(raycast, out hitObject, stepDistance, layerMask);
+
                         rayHit = !(hitObject.transform is null);
 
                         currentPosition += decayedVector;
@@ -193,14 +194,14 @@ namespace Vrlife.Core.Vr
 
                     if (rayHit)
                     {
-                        pointer.startColor = Color.green;
-                        pointer.endColor = Color.green;
+                        pointer.startColor = canTeleportColor;
+                        pointer.endColor = canTeleportColor;
                         teleportReady = true;
                     }
                     else
                     {
-                        pointer.startColor = Color.red;
-                        pointer.endColor = Color.red;
+                        pointer.startColor = cantTeleportColor;
+                        pointer.endColor = cantTeleportColor;
                     }
                     
 
@@ -238,7 +239,7 @@ namespace Vrlife.Core.Vr
             {
                 if (teleportReady)
                 {
-                    transform.position = hitObject.point;
+                    transform.position = new Vector3(hitObject.point.x - _camera.transform.localPosition.x, hitObject.point.y, hitObject.point.z - _camera.transform.localPosition.z);
                     teleportReady = false;
                 }
                 pointer.enabled = false;
