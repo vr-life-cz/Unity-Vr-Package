@@ -112,8 +112,7 @@ namespace Vrlife.Core.Vr
 
                 float difference = cameraHeight - hit.distance;
 
-
-                if (Math.Abs(difference) >= 0.1f)
+                if (Math.Abs(difference) >= 0.1f && hit.point != Vector3.zero)
                 {
                     coordinates = new Vector3(coordinates.x, coordinates.y + difference, coordinates.z);
                 }
