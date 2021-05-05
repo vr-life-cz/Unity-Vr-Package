@@ -12,13 +12,21 @@ namespace Vrlife.Core.Vr
     {
         [Inject] public IPlayerInputUpdater inputUpdater;
 
-        public Camera _camera;
-        [Range(0f, 2f)] public float movementSpeed = 1f;
-        public GameObject pointerHand;
-        public LineRenderer pointer;
-        public LayerMask layerMask;
-        [ColorUsage(true, false)] public Color canTeleportColor;
-        [ColorUsage(true, false)] public Color cantTeleportColor;
+        [BoxGroup("Dependencies")] public Camera _camera;
+
+        [BoxGroup("Dependencies")] public GameObject pointerHand;
+        [BoxGroup("Dependencies")] public LineRenderer pointer;
+        [BoxGroup("Dependencies")] public Animator fadeOutAnimator;
+
+        [BoxGroup("Settings")] [Range(0f, 2f)] public float movementSpeed = 1f;
+
+        [BoxGroup("Settings")] public LayerMask layerMask;
+
+        [BoxGroup("Settings")] [ColorUsage(true, false)]
+        public Color canTeleportColor;
+
+        [BoxGroup("Settings")] [ColorUsage(true, false)]
+        public Color cantTeleportColor;
 
         [BoxGroup("Controls")] [Description("Enables teleportation around using B button on right controller.")]
         public bool teleportationEnabled = true;
@@ -44,6 +52,8 @@ namespace Vrlife.Core.Vr
 
         private Gradient canTeleportGradient;
         private Gradient cantTeleportGradient;
+        private static readonly int Fadein = Animator.StringToHash("fadein");
+        private static readonly int Fadeout = Animator.StringToHash("fadeout");
 
         private void Awake()
         {
@@ -91,7 +101,7 @@ namespace Vrlife.Core.Vr
             if (respectColliders)
             {
                 Vector3 cameraPosition = _camera.transform.position;
-                
+
                 // walls
                 Ray raycast = new Ray(cameraPosition, coordinates);
                 if (Physics.SphereCast(raycast, .1f, .5f))
@@ -117,7 +127,6 @@ namespace Vrlife.Core.Vr
                     coordinates = new Vector3(coordinates.x, coordinates.y + difference, coordinates.z);
                 }
             }
-
 
             transform.Translate(coordinates * movementSpeed * Time.deltaTime);
         }
@@ -228,6 +237,18 @@ namespace Vrlife.Core.Vr
 
                 pointer.enabled = false;
             }
+        }
+
+        [Button]
+        public void DarkenScreen()
+        {
+            fadeOutAnimator.SetTrigger(Fadein);
+        }
+
+        [Button]
+        public void UnDarkScreen()
+        {
+            fadeOutAnimator.SetTrigger(Fadeout);
         }
     }
 }
