@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using Plugins.com.vrlife.vr.Runtime.Scripts;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -242,13 +243,13 @@ namespace Vrlife.Core.Vr
         [Button]
         public void DarkenScreen()
         {
-            fadeOutAnimator.SetTrigger(Fadein);
+            fadeOutAnimator.SetTrigger(Fadeout);
         }
 
         [Button]
         public void UnDarkScreen()
         {
-            fadeOutAnimator.SetTrigger(Fadeout);
+            fadeOutAnimator.SetTrigger(Fadein);
         }
     }
 }
