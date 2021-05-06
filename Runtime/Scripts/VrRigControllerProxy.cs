@@ -29,6 +29,15 @@ namespace Vrlife.Core.Vr
         [BoxGroup("Settings")] [ColorUsage(true, false)]
         public Color cantTeleportColor;
 
+        [BoxGroup("Settings")] [Description("Level of the floor. You can't go below it.")]
+        public float floorLevel = 0f;
+        
+        [BoxGroup("Settings")] 
+        public float colliderDifferenceThreshold = 0.125f;
+        
+        
+        
+
         [BoxGroup("Controls")] [Description("Enables teleportation around using B button on right controller.")]
         public bool teleportationEnabled = true;
 
@@ -42,11 +51,10 @@ namespace Vrlife.Core.Vr
         [BoxGroup("Controls")] [Description("Enables 'Flying' along Y axis using left joystick.")]
         public bool verticalMovementEnabled = true;
 
-        [BoxGroup("Controls")] [Description("Level of the floor. You can't go below it.")]
-        public float floorLevel = 0f;
-
         [BoxGroup("Controls")] [Description("If enabled, the horizontal and vertical movement will respect colliders")]
         public bool respectColliders;
+
+        [BoxGroup("Debug")] [SerializeField] private bool debugColliderDifference;
 
         private RaycastHit hitObject;
         private bool teleportReady;
@@ -75,6 +83,11 @@ namespace Vrlife.Core.Vr
                 new GradientAlphaKey[]
                     {new GradientAlphaKey(1f, 0.0f), new GradientAlphaKey(1f, 0.95f), new GradientAlphaKey(0f, 1f)}
             );
+        }
+
+        private void Start()
+        {
+            AnimatorEventHandler.OnScreenDarkened += () => { };
         }
 
         private void Update()
@@ -123,9 +136,14 @@ namespace Vrlife.Core.Vr
 
                 float difference = cameraHeight - hit.distance;
 
-                if (Math.Abs(difference) >= 0.1f && hit.point != Vector3.zero)
+                if (Math.Abs(difference) >= colliderDifferenceThreshold && hit.point != Vector3.zero)
                 {
                     coordinates = new Vector3(coordinates.x, coordinates.y + difference, coordinates.z);
+                    if (debugColliderDifference)
+                    {
+                        Debug.DrawRay(cameraPosition, onTheGround, Color.red, 1000);
+                        Debug.Log(difference);
+                    }
                 }
             }
 
