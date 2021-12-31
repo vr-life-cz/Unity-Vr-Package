@@ -1,4 +1,3 @@
-using System;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
@@ -18,15 +17,18 @@ namespace Vrlife.Core.Vr
     public UnityAction onGrabbed;
     public UnityAction onReleased;
 
-    [Title("Dynamic")] public Grabber grabbedBy;
+    [Title("Dynamic")] 
+    [ReadOnly] public Grabber grabbedBy;
 
-    [Title("Privates")] private Vector3 _originalPosition;
+    [Title("Privates")] 
+    private Vector3 _originalPosition;
     private Quaternion _originalRotation;
     private Transform _originalParent;
     private bool _originalKinematicState;
     private bool _originalGravityState;
 
-    [Title("Components")] private Rigidbody _rigidbody;
+    [Title("Components")] 
+    private Rigidbody _rigidbody;
     private Collider _collider;
     private Transform _transform;
 
@@ -42,13 +44,13 @@ namespace Vrlife.Core.Vr
     /// <summary>
     /// Called when the item is picked up
     /// </summary>
-    private void OnGrabbed(Grabber grabber)
+    public void OnGrabbed(Grabber grabber)
     {
       if (!canBeGrabbed) return; // If it can't be grabbed, we have nothing to do here
 
       if (IsGrabbed) // Logic for when the item is being held by other grabber -> transfer from one hand to another
       {
-        // grabbedBy.Regrab(grabber); // Changes the grabbing events to the second grabber
+        grabbedBy.Regrab(grabber); // Changes the grabbing events to the second grabber
       }
       else
       {
@@ -71,7 +73,7 @@ namespace Vrlife.Core.Vr
     /// <summary>
     /// Called when the item is dropped again; not called on Re-grab
     /// </summary>
-    private void OnReleased()
+    public void OnReleased()
     {
       _rigidbody.useGravity = _originalGravityState;
            _rigidbody.isKinematic = _originalKinematicState;
@@ -82,13 +84,13 @@ namespace Vrlife.Core.Vr
       {
         _transform.position = _originalPosition;
         _transform.rotation = _originalRotation;
-        
       }
       else
       {
         _rigidbody.velocity = grabbedBy.GetComponent<Rigidbody>().velocity;
       }
 
+      onReleased?.Invoke();
     }
   }
 }

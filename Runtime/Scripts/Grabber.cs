@@ -4,7 +4,7 @@ using Zenject;
 
 namespace Vrlife.Core.Vr
 {
-    public class Grabber : MonoBehaviour, IDebugInfoProvider
+    public class exGrabber : MonoBehaviour, IDebugInfoProvider
     {
         public ProximityWatcher proximityWatcher;
 
