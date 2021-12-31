@@ -3,7 +3,7 @@
 namespace Vrlife.Core.Vr
 {
     [RequireComponent(typeof(Collider))]
-    public class Grabbable : MonoBehaviour
+    public class exGrabbable : MonoBehaviour
     {
         public bool canBeGrabbed = true;
         
